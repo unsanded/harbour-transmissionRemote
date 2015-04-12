@@ -82,6 +82,16 @@ Page {
 
             spacing: Theme.paddingLarge
             height: childrenRect.height
+            Button{
+                id:updateButon
+                text: "Update"
+                onClicked: {
+                    transmission.update();
+                    torrentView.model=None;
+                    torrentView.model=transmission.torrents;
+
+                }
+            }
 
 
             PageHeader {
@@ -110,6 +120,7 @@ Page {
                     top: pageHeader.bottom
                 }
                 ListView{
+                    id: torrentView
                     width: parent.width
                     height: contentHeight
 

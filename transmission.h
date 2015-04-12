@@ -9,8 +9,8 @@
 class Transmission : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Torrent*> torrents READ torrents  NOTIFY torrentsChanged)
-    QQmlListProperty<Torrent*> m_torrents;
+    Q_PROPERTY(QQmlListProperty<Torrent> torrents READ torrents  NOTIFY torrentsChanged)
+    QQmlListProperty<Torrent> m_torrents;
     QList<Torrent*> torrentList;
 
 
@@ -18,16 +18,19 @@ class Transmission : public QObject
 public:
     explicit Transmission(QObject *parent = 0);
 
-QQmlListProperty<Torrent*> torrents() const
+QQmlListProperty<Torrent> torrents()
 {
-    return m_torrents;
+    return QQmlListProperty<Torrent>((QObject*) this,  torrentList);
 }
 
 signals:
 
-void torrentsChanged(QQmlListProperty<Torrent*> arg);
+void torrentsChanged(QQmlListProperty<Torrent> arg);
 
 public slots:
+
+void update();
+
 
 };
 
