@@ -30,11 +30,32 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import transmission 1.0
+
 import "pages"
+
+
 
 ApplicationWindow
 {
-    initialPage: Component { FirstPage { } }
+    id: mainwindow
+    Settings{
+        id: st
+    }
+
+    Transmission{
+        id: tm
+        server: "http://" + st.transmissionHost + ":9091/transmission/rpc"
+
+        Component.onCompleted: {
+            console.log("T: "  + torrents);
+        }
+    }
+
+    initialPage: Component { FirstPage {
+                  transmission:  tm
+                  settings: st
+        } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 }
 

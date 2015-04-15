@@ -30,29 +30,35 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import transmission 1.0
 
-
-Page {
+Dialog {
     id: page
-    SilicaListView {
-        id: listView
-        model: 20
-        anchors.fill: parent
-        header: PageHeader {
-            title: qsTr("Nested Page")
-        }
-        delegate: BackgroundItem {
-            id: delegate
 
-            Label {
-                x: Theme.paddingLarge
-                text: qsTr("Item") + " " + index
-                anchors.verticalCenter: parent.verticalCenter
-                color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-            }
-            onClicked: console.log("Clicked " + index)
+    property Settings settings
+
+
+    onAccepted: {
+        console.log('accepted settings ')
+        console.log('accepted settings ')
+        settings.setTransmissionHost(hostField.text)
+    }
+
+    Column {
+        spacing: 10
+        anchors.fill: parent
+        DialogHeader{
+            acceptText: "Save"
+            cancelText: "Cancel"
         }
-        VerticalScrollDecorator {}
+        Label{
+            text: "host"
+        }
+        TextField{
+            id: hostField
+            text: settings.transmissionHost
+
+        }
     }
 }
 

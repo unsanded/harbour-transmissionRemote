@@ -13,25 +13,27 @@
 TARGET = harbour-transmissionRemote
 
 CONFIG += sailfishapp
+CONFIG += C++11
 
 QT += network
 
 SOURCES += src/harbour-transmissionRemote.cpp \
-    rpcconnection.cpp \
-    torrentmodel.cpp \
-    torrent.cpp \
-    transmission.cpp
+    src/rpcCommands/torrentget.cpp \
+    src/rpcconnection.cpp \
+    src/torrent.cpp \
+    src/transmission.cpp \
+    src/settings.cpp
 
 OTHER_FILES += qml/harbour-transmissionRemote.qml \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
-    qml/pages/SecondPage.qml \
     rpm/harbour-transmissionRemote.changes.in \
     rpm/harbour-transmissionRemote.spec \
     rpm/harbour-transmissionRemote.yaml \
     translations/*.ts \
     harbour-transmissionRemote.desktop \
-    qml/pages/TorrentDelegate.qml
+    qml/pages/TorrentDelegate.qml \
+    qml/pages/SettingsPage.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -39,10 +41,11 @@ CONFIG += sailfishapp_i18n
 TRANSLATIONS += translations/harbour-transmissionRemote-de.ts
 
 HEADERS += \
-    rpcconnection.h \
-    torrentmodel.h \
-    torrent.h \
-    transmission.h
+    src/rpcCommands/torrentget.h \
+    src/rpcconnection.h \
+    src/torrent.h \
+    src/transmission.h \
+    src/settings.h
 
 RESOURCES +=
 

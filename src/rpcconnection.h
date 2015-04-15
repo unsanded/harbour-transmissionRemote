@@ -12,12 +12,16 @@
 class RpcConnection;
 
 class RpcCommand: public QObject{
+    Q_PROPERTY(int tag READ tag WRITE setTag NOTIFY tagChanged)
     Q_OBJECT
+    int m_tag;
+
 protected:
 
+    bool preparationDone;
    struct{
-        QJsonObject object;
         QJsonObject arguments;
+        QString result ; // should contain "success" after response is parsed
    } reply;
 
    struct{
@@ -27,34 +31,63 @@ protected:
 
 
    friend class RpcConnection;
-   virtual void parseReply();
    QNetworkReply* networkReply;
 
-   int tag;
 
    public:
-    RpcCommand(QString method){
+    RpcCommand(QString method, QObject* parent=0):
+        QObject(parent)
+    {
         request.object["method"]=method;
+        preparationDone=false;
     }
 
+    //to make commands sortable
     bool operator<(RpcCommand& other){
-        return tag< other.tag;
+        return tag()< other.tag();
+    }
+
+    int tag() const
+    {
+        return m_tag;
     }
 
 public slots:
 
-    virtual QByteArray make(){
-        request.object["tag"]      =tag;
-        request.object["arguments"]=request.arguments;
+    virtual QByteArray make()
+    {
+        if(!preparationDone){
+            preparationDone=true;
+            request.object["tag"]      =tag();
+            request.object["arguments"]=request.arguments;
+        }
         return QJsonDocument(request.object).toJson();
-
     }
 
- signals:
+    virtual void parseReplyJson(QJsonDocument& json){
+        reply.result   =json.object()["result"].toString();
+        //TODO do something with result other than "success"
+        reply.arguments=json.object()["arguments"].toObject();
+        handleReply();
+        emit gotReply();
+    }
+
+    virtual void handleReply(){}
+
+    void setTag(int arg)
+    {
+        if (m_tag != arg) {
+            m_tag = arg;
+            emit tagChanged(arg);
+        }
+    }
+
+signals:
     void gotReply();
 
 
 
+    void tagChanged(int arg);
 };
 
 class RpcConnection : public QObject
@@ -65,9 +98,9 @@ class RpcConnection : public QObject
 
     QUrl m_server;
     QByteArray sessidCookie;
-
-
     QNetworkAccessManager networkManager;
+
+    QMap<int, RpcCommand*> openCommands;
 
 public:
     explicit RpcConnection(QUrl server, QObject *parent = 0);
@@ -96,18 +129,8 @@ void setserver(QUrl arg)
 }
 
 
-private:
-void sendCommand(RpcCommand& command){
-    QNetworkRequest request;
-    request.setUrl(server());
-    request.setRawHeader("X-Transmission-Session-Id", sessidCookie);
-    QNetworkReply* reply = networkManager.sendCustomRequest(request, command.make());
-    connect(
-                &networkManager, SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(gotReply(QNetworkReply*))
-            );
-
-}
+public:
+void sendCommand(RpcCommand* command);
 
 };
 

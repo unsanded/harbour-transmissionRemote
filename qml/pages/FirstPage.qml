@@ -36,6 +36,9 @@ import transmission 1.0
 Page {
     id: page
 
+    property Transmission transmission
+    property Settings settings
+
     ListModel{
 
         id: testListModel
@@ -43,12 +46,6 @@ Page {
             testListModel.append(torrentOne)
             testListModel.append(torrentTwo)
             console.log("added");
-        }
-    }
-    Transmission{
-        id: transmission
-        Component.onCompleted: {
-            console.log("T: "  + torrents);
         }
     }
 
@@ -64,8 +61,15 @@ Page {
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
         PullDownMenu {
             MenuItem {
-                text: qsTr("Show Page 2")
-                onClicked: pageStack.push(Qt.resolvedUrl("SecondPage.qml"))
+                text: qsTr("settings")
+                onClicked:{
+                    console.log("settings", page.settings)
+                    console.log("transmission", page.transmission)
+                    pageStack.push(
+                                       Qt.resolvedUrl("SettingsPage.qml"),
+                                       {"settings": page.settings}
+                                   )
+                }
             }
         }
 
@@ -99,17 +103,6 @@ Page {
                 title: qsTr("UI Template")
             }
 
-
-            Torrent{
-                id:torrentOne
-                percentage: 60
-                name: "test"
-            }
-            Torrent{
-                id:torrentTwo
-                percentage: 50
-                name: "testtwo"
-            }
 
             Row{
                 anchors {

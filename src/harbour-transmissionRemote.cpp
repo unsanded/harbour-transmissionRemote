@@ -35,6 +35,7 @@
 #include <sailfishapp.h>
 #include "torrent.h"
 #include "transmission.h"
+#include "settings.h"
 
 
 int main(int argc, char *argv[])
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<QList<Torrent*> >("QObjectList");
     qmlRegisterType<Torrent>("transmission", 1, 0, "Torrent");
     qmlRegisterType<Transmission>("transmission", 1, 0, "Transmission");
+    qmlRegisterType<Settings>("transmission", 1, 0, "Settings");
     //qmlRegisterType<TorrentModel>("transmission", 1, 0, "TorrentModel");
     return SailfishApp::main(argc, argv);
 }

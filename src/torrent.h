@@ -2,6 +2,7 @@
 #define TORRENT_H
 
 #include <QObject>
+#include <QVariantMap>
 
 class Torrent : public QObject
 {
@@ -18,6 +19,8 @@ class Torrent : public QObject
     int m_fileCount;
 
     int m_id;
+
+    QVariantMap fields;
 
 public:
     explicit Torrent(QObject *parent = 0);
@@ -56,6 +59,10 @@ void idChanged(int arg);
 
 public slots:
 
+void updateFields(QJsonObject& freshData);
+
+
+// From now on it's just setters; boooring
 void setname(QString arg)
 {
     if (m_name != arg) {
