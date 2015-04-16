@@ -40,24 +40,38 @@ Dialog {
 
     onAccepted: {
         console.log('accepted settings ')
-        console.log('accepted settings ')
         settings.setTransmissionHost(hostField.text)
+        settings.setPort(parseInt(portField.text))
     }
 
     Column {
         spacing: 10
-        anchors.fill: parent
+        width: parent.width
         DialogHeader{
             acceptText: "Save"
             cancelText: "Cancel"
         }
-        Label{
-            text: "host"
-        }
         TextField{
             id: hostField
+            inputMethodHints: Qt.ImhUrlCharactersOnly
+            width: parent.width
+            label: "host"
             text: settings.transmissionHost
-
+            Component.onCompleted: {
+                if(text.length < 3)
+                    text="192.168.1.10"
+            }
+        }
+        TextField{
+            id: portField
+            width: parent.width
+            inputMethodHints: Qt.ImhDigitsOnly
+            label: "port"
+            text: settings.port
+            Component.onCompleted: {
+                if(text.length < 3)
+                    text="9091"
+            }
         }
     }
 }

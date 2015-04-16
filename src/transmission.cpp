@@ -20,7 +20,6 @@ void Transmission::update()
             );
             connection->sendCommand(getCommand);
 
-    emit torrentsChanged(torrents());
 }
 
 void Transmission::onTorrentData(int id, QJsonObject data)

@@ -63,11 +63,9 @@ Page {
             MenuItem {
                 text: qsTr("settings")
                 onClicked:{
-                    console.log("settings", page.settings)
-                    console.log("transmission", page.transmission)
                     pageStack.push(
                                        Qt.resolvedUrl("SettingsPage.qml"),
-                                       {"settings": page.settings}
+                                       {"settings": settings}
                                    )
                 }
             }
