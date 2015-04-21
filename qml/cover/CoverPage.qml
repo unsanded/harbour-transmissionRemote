@@ -30,12 +30,48 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import transmission 1.0
+import "../prettyFileSize.js" as Pretty
 
 CoverBackground {
-    Label {
-        id: label
+
+    id: cover
+    property bool active: Cover.status == Cover.Active
+    property Transmission transmission
+
+
+
+    Timer{
+        running: true
+        triggeredOnStart: true
+        onTriggered: {
+            console.log(cover.status);
+            console.log(cover.active);
+            transmission.updateStats();
+        }
+        repeat: true
+        interval: 1000
+
+    }
+
+
+    Column{
         anchors.centerIn: parent
-        text: qsTr("My Cover")
+        Label {
+            id: label
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: qsTr("Transmission")
+        }
+        Label {
+            id: upspeed
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "up: " + Pretty.prettyFileSize(transmission.upSpeed) + "/S"
+        }
+        Label {
+            id: downspeed
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "down: " + Pretty.prettyFileSize(transmission.downSpeed) + "/S"
+        }
     }
 
     CoverActionList {
@@ -43,6 +79,12 @@ CoverBackground {
 
         CoverAction {
             iconSource: "image://theme/icon-cover-next"
+            onTriggered: {
+                transmission.updateStats()
+                console.log(cover.status);
+                console.log(cover.active);
+            }
+
         }
 
         CoverAction {

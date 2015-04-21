@@ -28,13 +28,12 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifdef QT_QML_DEBUG
 #include <QtQuick>
-#endif
 
 #include <sailfishapp.h>
 #include "torrent.h"
 #include "transmission.h"
+
 #include "settings.h"
 
 
@@ -50,10 +49,10 @@ int main(int argc, char *argv[])
     // To display the view, call "show()" (will show fullscreen on device).
 
     qRegisterMetaType<QList<Torrent*> >("QObjectList");
-    qmlRegisterType<Torrent>("transmission", 1, 0, "Torrent");
+    qmlRegisterType<Torrent>     ("transmission", 1, 0, "Torrent");
+    qmlRegisterType<TorrentFile> ("transmission", 1, 0, "TorrentFile");
     qmlRegisterType<Transmission>("transmission", 1, 0, "Transmission");
     qmlRegisterType<Settings>("transmission", 1, 0, "Settings");
-    //qmlRegisterType<TorrentModel>("transmission", 1, 0, "TorrentModel");
     return SailfishApp::main(argc, argv);
 }
 

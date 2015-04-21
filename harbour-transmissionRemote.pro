@@ -22,7 +22,10 @@ SOURCES += src/harbour-transmissionRemote.cpp \
     src/rpcconnection.cpp \
     src/torrent.cpp \
     src/transmission.cpp \
-    src/settings.cpp
+    src/settings.cpp \
+    src/torrentfile.cpp \
+    src/rpcCommands/uploadtorrent.cpp \
+    src/rpcCommands/sessionstats.cpp
 
 OTHER_FILES += qml/harbour-transmissionRemote.qml \
     qml/cover/CoverPage.qml \
@@ -33,7 +36,10 @@ OTHER_FILES += qml/harbour-transmissionRemote.qml \
     translations/*.ts \
     harbour-transmissionRemote.desktop \
     qml/pages/TorrentDelegate.qml \
-    qml/pages/SettingsPage.qml
+    qml/pages/SettingsPage.qml \
+    qml/pages/TorrentPage.qml \
+    qml/pages/TorrentFileDelegate.qml \
+    qml/prettyFileSize.js
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -45,7 +51,10 @@ HEADERS += \
     src/rpcconnection.h \
     src/torrent.h \
     src/transmission.h \
-    src/settings.h
+    src/settings.h \
+    src/torrentfile.h \
+    src/rpcCommands/uploadtorrent.h \
+    src/rpcCommands/sessionstats.h
 
 RESOURCES +=
 

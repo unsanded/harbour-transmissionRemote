@@ -4,16 +4,12 @@
 <context>
     <name>CoverPage</name>
     <message>
-        <source>My Cover</source>
+        <source>Transmission</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>FirstPage</name>
-    <message>
-        <source>UI Template</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>settings</source>
         <translation type="unfinished"></translation>

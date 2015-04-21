@@ -16,7 +16,6 @@ public:
 
 signals:
 
-    void gotTorrentInfo(int id, QJsonObject fields);
 public slots:
 
 };

@@ -6,22 +6,29 @@
 
 #include <QObject>
 #include <QQmlListProperty>
+#include <QFile>
 
 class Transmission : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Torrent> torrents READ torrents  NOTIFY torrentsChanged)
     Q_PROPERTY(QUrl server READ server WRITE setServer NOTIFY serverChanged)
+    Q_PROPERTY(int upSpeed READ upSpeed WRITE setUpSpeed NOTIFY upSpeedChanged)
+    Q_PROPERTY(int downSpeed READ downSpeed WRITE setDownSpeed NOTIFY downSpeedChanged)
 
-    QQmlListProperty<Torrent> m_torrents;
     QList<Torrent*> torrentList;
 
     QMap<int, Torrent*> torrentLookup;
 
     RpcConnection* connection;
 
+    int m_upSpeed;
+
+    int m_downSpeed;
+
 public:
     explicit Transmission(QObject *parent = 0);
+
 
 QQmlListProperty<Torrent> torrents()
 {
@@ -36,18 +43,37 @@ QUrl server() const
         return QUrl();
 }
 
+int upSpeed() const
+{
+    return m_upSpeed;
+}
+
+int downSpeed() const
+{
+    return m_downSpeed;
+}
+
 signals:
 
     void torrentsChanged(QQmlListProperty<Torrent> arg);
 
     void serverChanged(QUrl arg);
 
+    void upSpeedChanged(int arg);
+
+    void downSpeedChanged(int arg);
+
 public slots:
 
+    Torrent* getTorrent(int id);
+
     void update();
+    void updateStats();
 
-    void onTorrentData(int id, QJsonObject data);
+    void uploadTorrent(QString filename);
 
+    void onTorrentData( QJsonObject& data);
+    void onUpdateDone();
     void setServer(QUrl arg)
     {
         if (!connection)
@@ -56,6 +82,20 @@ public slots:
         {
             connection->setserver(arg);
             emit serverChanged(arg);
+        }
+    }
+    void setUpSpeed(int arg)
+    {
+        if (m_upSpeed != arg) {
+            m_upSpeed = arg;
+            emit upSpeedChanged(arg);
+        }
+    }
+    void setDownSpeed(int arg)
+    {
+        if (m_downSpeed != arg) {
+            m_downSpeed = arg;
+            emit downSpeedChanged(arg);
         }
     }
 };

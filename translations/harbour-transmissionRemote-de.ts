@@ -5,7 +5,11 @@
     <name>CoverPage</name>
     <message>
         <source>My Cover</source>
-        <translation>Mein Cover</translation>
+        <translation type="vanished">Mein Cover</translation>
+    </message>
+    <message>
+        <source>Transmission</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16,7 +20,7 @@
     </message>
     <message>
         <source>UI Template</source>
-        <translation>UI-Vorlage</translation>
+        <translation type="vanished">UI-Vorlage</translation>
     </message>
     <message>
         <source>Hello Sailors</source>

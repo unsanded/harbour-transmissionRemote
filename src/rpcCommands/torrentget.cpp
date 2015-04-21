@@ -36,8 +36,11 @@ void TorrentGet::handleReply()
 
     for(QJsonArray::iterator iter=torrents.begin(); iter!=torrents.end(); iter++){
         QJsonObject torrent = (*iter).toObject();
-        emit gotTorrentInfo(torrent["id"].toInt(), torrent);
+        emit gotTorrentInfo(torrent);
     }
+
+
+
 }
 
 } // namespace RpcCommands

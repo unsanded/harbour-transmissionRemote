@@ -16,6 +16,7 @@ class RpcCommand: public QObject{
     Q_OBJECT
     int m_tag;
 
+    friend class RpcConnection;
 protected:
 
     bool preparationDone;
@@ -27,10 +28,9 @@ protected:
    struct{
         QJsonObject object;
         QJsonObject arguments;
+        QJsonDocument doc;
    } request;
 
-
-   friend class RpcConnection;
    QNetworkReply* networkReply;
 
 
@@ -57,23 +57,19 @@ public slots:
     virtual QByteArray make()
     {
         if(!preparationDone){
-            preparationDone=true;
             request.object["tag"]      =tag();
             request.object["arguments"]=request.arguments;
+            request.doc=QJsonDocument(request.object);
+            preparationDone=true;
         }
-        return QJsonDocument(request.object).toJson();
+        return request.doc.toJson();
     }
 
-    virtual void parseReplyJson(QJsonDocument& json){
-        reply.result   =json.object()["result"].toString();
-        //TODO do something with result other than "success"
-        reply.arguments=json.object()["arguments"].toObject();
-        handleReply();
-        emit gotReply();
-    }
+    virtual void parseReplyJson(const QJsonDocument& json );
 
     virtual void handleReply(){}
 
+protected:
     void setTag(int arg)
     {
         if (m_tag != arg) {
@@ -85,8 +81,14 @@ public slots:
 signals:
     void gotReply();
 
+    /**
+     * @brief gotTorrentInfo should be emitted whenever data about a torrent becomes available.
+     *
+     * @param fields A JsonObject containing at least the *id* filed.
+     */
+    void gotTorrentInfo(QJsonObject& fields);
 
-
+    //this should never be usefull. it is just here because tag is a Q_property
     void tagChanged(int arg);
 };
 

@@ -3,8 +3,9 @@ Type=Application
 X-Nemo-Application-Type=silica-qt5
 Icon=harbour-transmissionRemote
 Exec=harbour-transmissionRemote
-Name=harbour-transmissionRemote
+Name=Transmission Remote
 # translation example:
 # your app name in German locale (de)
-Name[de]=harbour-transmissionRemote
+Name[de]=Transmission Remote
+MimeType=application/x-bittorrent
 

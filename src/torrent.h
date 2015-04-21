@@ -3,15 +3,22 @@
 
 #include <QObject>
 #include <QVariantMap>
+#include <QQmlListProperty>
+#include "rpcconnection.h"
+#include "torrentfile.h"
+
+#define torrentFields {"name", "percentDone", "eta", "fileStats", "files", "downloadDir", "errorString", "trackers","rateDownload", "rateUpload", "sizeWhenDone"}
 
 class Torrent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int id READ id WRITE setid NOTIFY idChanged)
-
     Q_PROPERTY(QString name READ name WRITE setname NOTIFY nameChanged)
     Q_PROPERTY(qreal percentage READ percentage WRITE setpercentage NOTIFY percentageChanged)
     Q_PROPERTY(int fileCount READ fileCount WRITE setfileCount NOTIFY fileCountChanged)
+
+    Q_PROPERTY(QQmlListProperty<TorrentFile> files READ files NOTIFY filesChanged)
+
     //TODO: figure out best way to represent state
 
     QString m_name;
@@ -22,9 +29,14 @@ class Torrent : public QObject
 
     QVariantMap fields;
 
+    RpcConnection* connection;
+
+    QList<TorrentFile*> fileList;
+    QMap<QString, TorrentFile*> fileLookup;
+
 public:
-    explicit Torrent(QObject *parent = 0);
-    explicit Torrent(const Torrent& other );
+    explicit Torrent( RpcConnection* connection=0, QObject *parent = 0);
+    explicit Torrent( const Torrent& other );
 
 
 QString name() const
@@ -47,19 +59,29 @@ int id() const
     return m_id;
 }
 
+QQmlListProperty<TorrentFile> files()
+{
+    return QQmlListProperty<TorrentFile>( (QObject*) this, fileList);
+}
+
 signals:
 
 void nameChanged(QString arg);
-
 void percentageChanged(qreal arg);
-
 void fileCountChanged(int arg);
-
 void idChanged(int arg);
+void filesChanged(QQmlListProperty<TorrentFile> arg);
 
 public slots:
 
+/**
+ * @brief updateFields updates the torrent data with the data in freshData
+ * @param freshData JsonObject describing a torrent.
+ */
 void updateFields(QJsonObject& freshData);
+
+
+void fullUpdate();
 
 
 // From now on it's just setters; boooring

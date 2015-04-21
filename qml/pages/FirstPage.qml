@@ -39,17 +39,15 @@ Page {
     property Transmission transmission
     property Settings settings
 
-    ListModel{
-
-        id: testListModel
-        Component.onCompleted: {
-            testListModel.append(torrentOne)
-            testListModel.append(torrentTwo)
-            console.log("added");
-        }
+    Timer{
+        id:updateTimer
+        interval: 1000
+        onTriggered: transmission.update()
+        triggeredOnStart: true
+        running: true
+        repeat: true
     }
-
-    // To enable PullDownMenu, place our content in a SilicaFlickable
+        // To enable PullDownMenu, place our content in a SilicaFlickable
     SilicaFlickable {
         anchors.fill: parent
 
@@ -63,10 +61,11 @@ Page {
             MenuItem {
                 text: qsTr("settings")
                 onClicked:{
-                    pageStack.push(
-                                       Qt.resolvedUrl("SettingsPage.qml"),
-                                       {"settings": settings}
-                                   )
+                    pageStack.push
+                   (
+                       Qt.resolvedUrl("SettingsPage.qml"),
+                       {"settings": settings}
+                   )
                 }
             }
         }
@@ -74,9 +73,11 @@ Page {
 
 
         Column {
-            id: column
+            PageHeader{
+                title: "Transmission"
+            }
 
-            anchors.topMargin: pageHeader.heigth
+            id: column
             anchors{
                 left: parent.left
                 right: parent.right
@@ -89,18 +90,10 @@ Page {
                 text: "Update"
                 onClicked: {
                     transmission.update();
-                    torrentView.model=None;
-                    torrentView.model=transmission.torrents;
+//                    torrentView.model=transmission.torrents;
 
                 }
             }
-
-
-            PageHeader {
-                id: pageHeader
-                title: qsTr("UI Template")
-            }
-
 
             Row{
                 anchors {
@@ -108,16 +101,17 @@ Page {
                     rightMargin: Theme.paddingMedium
                     left: parent.left
                     right: parent.right
-                    top: pageHeader.bottom
                 }
+
                 ListView{
                     id: torrentView
                     width: parent.width
                     height: contentHeight
 
                     model: transmission.torrents
-                    delegate: TorrentDelegate{}
-
+                    delegate: TorrentDelegate{
+                        transmission: page.transmission
+                    }
                 }
             }
         }

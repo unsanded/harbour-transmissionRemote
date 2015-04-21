@@ -33,6 +33,7 @@ import Sailfish.Silica 1.0
 import transmission 1.0
 
 import "pages"
+import "cover"
 
 
 
@@ -46,17 +47,16 @@ ApplicationWindow
     Transmission{
         id: tm
         server: "http://" + st.transmissionHost + ":9091/transmission/rpc"
-
-        Component.onCompleted: {
-            console.log("T: "  + torrents);
-        }
     }
 
     initialPage: Component { FirstPage {
                   transmission:  tm
                   settings: st
         } }
-    cover: Qt.resolvedUrl("cover/CoverPage.qml")
+
+    cover: CoverPage{
+        transmission: tm
+    }
 }
 
 

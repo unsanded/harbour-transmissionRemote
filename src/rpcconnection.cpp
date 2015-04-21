@@ -45,12 +45,12 @@ void RpcConnection::gotReply(QNetworkReply *reply)
     }
     int tag=doc.object()["tag"].toInt();
 
-    RpcCommand* command = openCommands[tag];
+    RpcCommand* command = openCommands.take(tag);
     if(!command){
         qWarning() << "received reply to unknown command";
         qWarning() << doc;
+        return;
     }
-
     command->parseReplyJson(doc);
 
 }
@@ -80,7 +80,11 @@ void RpcConnection::sendCommand(RpcCommand *command){
 }
 
 
-
-
-
-
+void RpcCommand::parseReplyJson(const QJsonDocument &json ){
+    reply.result   =json.object()["result"].toString();
+    //TODO do something with result other than "success"
+    reply.arguments=json.object()["arguments"].toObject();
+    handleReply();
+    emit gotReply();
+    deleteLater();
+}
