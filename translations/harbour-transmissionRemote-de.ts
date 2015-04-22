@@ -30,6 +30,10 @@
         <source>settings</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>refresh</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SecondPage</name>
@@ -40,6 +44,13 @@
     <message>
         <source>Item</source>
         <translation type="vanished">Element</translation>
+    </message>
+</context>
+<context>
+    <name>TorrentPage</name>
+    <message>
+        <source>refresh</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

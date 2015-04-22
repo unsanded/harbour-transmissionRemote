@@ -44,9 +44,10 @@ ApplicationWindow
         id: st
     }
 
+
     Transmission{
         id: tm
-        server: "http://" + st.transmissionHost + ":9091/transmission/rpc"
+        server: "http://" + st.transmissionHost + ":" + st.port + "/transmission/rpc"
     }
 
     initialPage: Component { FirstPage {

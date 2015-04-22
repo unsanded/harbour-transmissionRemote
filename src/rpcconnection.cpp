@@ -13,7 +13,6 @@ RpcConnection::RpcConnection(QUrl server, QObject *parent) :
 void RpcConnection::gotReply(QNetworkReply *reply)
 {
     int statusCode =reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    qDebug() << "status: " << statusCode;
     if(statusCode==409)
     {
         qDebug() << "setting session cookie";
@@ -27,10 +26,9 @@ void RpcConnection::gotReply(QNetworkReply *reply)
 
     QByteArray data = reply->readAll();
     if(data.length()==0){
-        qWarning() << "received empty";
+        //qWarning() << "received empty";
         return;
     }
-    qDebug() << "received: " << data;
 
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson(data, &error);
@@ -65,9 +63,8 @@ void RpcConnection::sendCommand(RpcCommand *command){
     openCommands.insert(command->tag(), command);
 
 
-    qDebug() <<"sending" << command->make();
 
-    QNetworkRequest request;
+    QNetworkRequest request ;
     request.setUrl(server());
 
     request.setRawHeader("X-Transmission-Session-Id", sessidCookie);

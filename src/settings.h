@@ -8,7 +8,7 @@ class Settings : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString transmissionHost READ transmissionHost WRITE setTransmissionHost NOTIFY transmissionHostChanged)
-    Q_PROPERTY(short unsigned port READ port WRITE setPort NOTIFY portChanged)
+    Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
 
     QSettings settings;
 
@@ -21,16 +21,16 @@ QString transmissionHost() const
     return settings.value("transmissionHost").toString();
 }
 
-short unsigned port() const
+int port() const
 {
-    return settings.value("transmissionHost").toInt();
+    return settings.value("transmissionPort", 9091).toInt();
 }
 
 signals:
 
 void transmissionHostChanged(QString arg);
 
-void portChanged(short unsigned arg);
+void portChanged(int arg);
 
 public slots:
 
@@ -41,7 +41,7 @@ void setTransmissionHost(QString arg)
         emit transmissionHostChanged(arg);
     }
 }
-void setPort(short unsigned arg)
+void setPort(int arg)
 {
     if (port() != arg) {
         settings.setValue("port", arg);

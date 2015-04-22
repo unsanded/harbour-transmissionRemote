@@ -7,11 +7,6 @@ Item {
     property ListView listView: ListView.view
     property Transmission transmission
 
-    Component.onCompleted: {
-        console.log(listView)
-        console.log(parent)
-    }
-
     signal onClicked
     width: listView.width
     height: 100
@@ -26,23 +21,17 @@ Item {
                           )
                         }
 
-        Column{
-            width: root.width
-            Row{
-                width: root.width
-                Label{
-                    color: Theme.primaryColor
-                    text: model.name
-                }
-            }
-            Row{
-                width: root.width
-                ProgressBar{
-                    value: model.percentage
-                    width: root.width
-                    maximumValue: 100
-                }
-            }
+        Label{
+            width: parent.width
+            id: nameLabel
+            color: Theme.primaryColor
+            text: model.name
+        }
+        ProgressBar{
+            value: model.percentage
+            anchors.top: nameLabel.verticalCenter
+            width: parent.width
+            maximumValue: 100
         }
     }
 }

@@ -10,6 +10,8 @@ Transmission::Transmission(QObject *parent) :
     QObject(parent)
 {
 
+    m_upSpeed=0;
+    m_downSpeed=0;
     connection=NULL;
 }
 
@@ -41,7 +43,7 @@ void Transmission::updateStats()
             );
 
     connect(
-              command, SIGNAL(gotDownspeed(int)),
+              command, SIGNAL(gotDownSpeed(int)),
                 this, SLOT(setDownSpeed(int))
             );
 
@@ -63,21 +65,20 @@ void Transmission::uploadTorrent(QString filename)
 void Transmission::onTorrentData(QJsonObject& data)
 {
     int id=data["id"].toInt();
-    qDebug() << "Data for torrent " <<  id;
     Torrent* t= torrentLookup[id];
     if(!t){
-        qDebug() << "  it's new";
+        qDebug() << "new torent " <<  id;
         t=new Torrent(connection, this);
         t->setid(id);
         torrentLookup.insert(id, t);
         torrentList.append(t);
+        emit torrentsChanged(torrents());
     }
     t->updateFields(data);
 }
 
 void Transmission::onUpdateDone()
 {
-    emit torrentsChanged(torrents());
 }
 
 

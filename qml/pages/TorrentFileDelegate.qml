@@ -7,34 +7,31 @@ Item {
     property ListView listView: ListView.view
     width: listView.width
 
-        height: contentItem.height
-        BackgroundItem{
+    height: contentItem.height
+    BackgroundItem{
         id: contentItem
         width: parent.width
-        Column{
+        Switch{
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            id: wantedSwitch
+            checked: model.wanted
+        }
+        Label{
+            anchors.left: wantedSwitch.right
+            anchors.right: parent.right
+            id: nameLabel
+            elide: Text.ElideMiddle
+            text: model.fileName
+        }
+        ProgressBar{
+            anchors.left: wantedSwitch.right
+            anchors.right: parent.right
+            anchors.top: nameLabel.verticalCenter
 
-            width: parent.width
-            Row{
-                width: parent.width
-                Switch{
-                    checked: model.wanted
-                }
-                Label{
-                    id: nameLabel
-                    width: parent.width
-                    elide: Text.ElideMiddle
-                    text: model.fileName
-                }
-            }
-            Row{
-                width: parent.width
-                ProgressBar{
-                    valueText: model.haveBytes + "/" + model.completedBytes
-                    width: parent.width
-                    maximumValue: 100
-                    value: model.percentage
-                }
-            }
+            maximumValue: 100
+            value: model.percentage
         }
     }
 }

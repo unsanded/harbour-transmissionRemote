@@ -76,8 +76,10 @@ public slots:
     void onUpdateDone();
     void setServer(QUrl arg)
     {
-        if (!connection)
+        if (!connection){
             connection=new RpcConnection(arg, this);
+            emit serverChanged(arg);
+        }
         else if (connection->server() != arg)
         {
             connection->setserver(arg);

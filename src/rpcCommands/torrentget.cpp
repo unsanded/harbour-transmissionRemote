@@ -18,7 +18,6 @@ TorrentGet::TorrentGet(QList<int> ids, QStringList fields, QObject *parent) :
     if(!fields.contains("eta"))
         fields << "eta";
 
-    qDebug() << fields;
     if(!torrentIds.empty())
     {
         QVariantList torrIds;

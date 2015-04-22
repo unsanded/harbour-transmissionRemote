@@ -63,8 +63,8 @@ public:
     double percentage() const
     {
         if(completedBytes() && haveBytes())
-            return (100*haveBytes())/completedBytes();
-        return 0.0;
+            return 100.0*((double)haveBytes())/((double)completedBytes());
+        return -1;
 
     }
 

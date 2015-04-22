@@ -39,22 +39,36 @@ Page {
     property Transmission transmission
     property Settings settings
 
+    Component.onCompleted: {
+        console.log("args",Qt.application.arguments)
+        if(Qt.application.aruments.length>1){
+            Console.log("uploading torrent ", Qt.arguments[1])
+            tm.uploadTorrent(Qt.application.arguments[1]);
+        }
+    }
+
     Timer{
         id:updateTimer
         interval: 1000
         onTriggered: transmission.update()
         triggeredOnStart: true
         running: true
-        repeat: true
+        repeat:  true
     }
-        // To enable PullDownMenu, place our content in a SilicaFlickable
-    SilicaFlickable {
-        anchors.fill: parent
-
-        contentHeight: column.height
-        contentWidth: parent.width
-
+    SilicaListView{
+        id: torrentView
+        width: parent.width
+        height: parent.height
         VerticalScrollDecorator{}
+
+        header:PageHeader{
+            title: "Transmission"
+        }
+
+        model: transmission.torrents
+        delegate: TorrentDelegate{
+            transmission: page.transmission
+        }
 
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
         PullDownMenu {
@@ -67,53 +81,11 @@ Page {
                        {"settings": settings}
                    )
                 }
-            }
-        }
-
-
-
-        Column {
-            PageHeader{
-                title: "Transmission"
-            }
-
-            id: column
-            anchors{
-                left: parent.left
-                right: parent.right
-            }
-
-            spacing: Theme.paddingLarge
-            height: childrenRect.height
-            Button{
-                id:updateButon
-                text: "Update"
-                onClicked: {
-                    transmission.update();
-//                    torrentView.model=transmission.torrents;
-
-                }
-            }
-
-            Row{
-                anchors {
-                    leftMargin: Theme.paddingMedium
-                    rightMargin: Theme.paddingMedium
-                    left: parent.left
-                    right: parent.right
-                }
-
-                ListView{
-                    id: torrentView
-                    width: parent.width
-                    height: contentHeight
-
-                    model: transmission.torrents
-                    delegate: TorrentDelegate{
-                        transmission: page.transmission
-                    }
-                }
-            }
-        }
-    }
+            }//MenuItem
+            MenuItem {
+                text: qsTr("refresh")
+                onClicked:transmission.update();
+            }//MenuItem
+        }//pulldownmenu
+    }//
 }

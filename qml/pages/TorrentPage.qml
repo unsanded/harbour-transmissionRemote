@@ -8,42 +8,33 @@ Page {
     id: page
     property Torrent torrent
 
+    Component.onCompleted: {
+        torrent.fullUpdate()
+    }
 
-
-    Column{
-        VerticalScrollDecorator{}
+    SilicaListView{
+        id: fileView
+        model: torrent.files
         width: parent.width
-        PageHeader{
-            id:nameLabel
+        height: parent.height
+
+        delegate: TorrentFileDelegate{}
+
+        VerticalScrollDecorator{}
+
+        PullDownMenu{
+            MenuItem{
+                text:qsTr("refresh")
+                onClicked: {
+                    torrent.fullUpdate()
+                }
+            }
+        }
+
+        header:PageHeader{
+            id:header
             title: page.torrent.name
-            Label{
-                anchors.right: parent.right
-                anchors.top: nameLabel.top
-                id: percentageLabel
-                color: Theme.secondaryColor
-                text: torrent.percentage + "%"
-            }
-        }
-        Button{
-            id:updateButon
-            text: "Update"
-            onClicked: {
-                torrent.fullUpdate();
-            }
-        }
-
-        Row{
-            width: parent.width
-
-            ListView{
-                id: fileView
-                model: torrent.files
-                width: parent.width
-                height: contentHeight
-
-                delegate: TorrentFileDelegate{}
-
-            }
+            description: torrent.percentage + "%"
         }
     }
 }

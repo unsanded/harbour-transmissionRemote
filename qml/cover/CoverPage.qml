@@ -36,22 +36,18 @@ import "../prettyFileSize.js" as Pretty
 CoverBackground {
 
     id: cover
-    property bool active: Cover.status == Cover.Active
     property Transmission transmission
 
 
 
     Timer{
-        running: true
+        running: (cover.status===2)
         triggeredOnStart: true
         onTriggered: {
-            console.log(cover.status);
-            console.log(cover.active);
             transmission.updateStats();
         }
         repeat: true
         interval: 1000
-
     }
 
 
@@ -74,23 +70,8 @@ CoverBackground {
         }
     }
 
-    CoverActionList {
-        id: coverAction
+    //TODO make some fancy coveraction shit
 
-        CoverAction {
-            iconSource: "image://theme/icon-cover-next"
-            onTriggered: {
-                transmission.updateStats()
-                console.log(cover.status);
-                console.log(cover.active);
-            }
-
-        }
-
-        CoverAction {
-            iconSource: "image://theme/icon-cover-pause"
-        }
-    }
 }
 
 

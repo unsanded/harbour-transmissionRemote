@@ -25,7 +25,6 @@ Torrent::Torrent(const Torrent &other):
 
 void Torrent::updateFields(QJsonObject &freshData){
 
-    qDebug() << "updating fields";
 
     if(freshData.contains("name"))
         setname(freshData["name"].toString());
