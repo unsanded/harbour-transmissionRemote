@@ -17,7 +17,7 @@ CONFIG += C++11
 
 QT += network
 
-SOURCES += src/harbour-transmissionRemote.cpp \
+SOURCES += \
     src/rpcCommands/torrentget.cpp \
     src/rpcconnection.cpp \
     src/torrent.cpp \
@@ -25,9 +25,10 @@ SOURCES += src/harbour-transmissionRemote.cpp \
     src/settings.cpp \
     src/torrentfile.cpp \
     src/rpcCommands/uploadtorrent.cpp \
-    src/rpcCommands/sessionstats.cpp
+    src/rpcCommands/sessionstats.cpp \
+    src/harbour-transmissionremote.cpp
 
-OTHER_FILES += qml/harbour-transmissionRemote.qml \
+OTHER_FILES += \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
     translations/*.ts \
@@ -39,7 +40,8 @@ OTHER_FILES += qml/harbour-transmissionRemote.qml \
     harbour-transmissionremote.desktop \
     rpm/harbour-transmissionremote.spec \
     rpm/harbour-transmissionremote.yaml \
-    rpm/harbour-transmissionremote.changes.in
+    rpm/harbour-transmissionremote.changes.in \
+    qml/harbour-transmissionremote.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line

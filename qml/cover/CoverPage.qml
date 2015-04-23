@@ -30,7 +30,7 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import transmission 1.0
+import harbour.transmissionremote 1.0
 import "../prettyFileSize.js" as Pretty
 
 CoverBackground {
@@ -47,7 +47,7 @@ CoverBackground {
             transmission.updateStats();
         }
         repeat: true
-        interval: 1000
+        interval: 2000
     }
 
 
@@ -61,12 +61,12 @@ CoverBackground {
         Label {
             id: upspeed
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "up: " + Pretty.prettyFileSize(transmission.upSpeed) + "/S"
+            text: "up: " + Pretty.prettyFileSize(transmission.upSpeed) + "/s"
         }
         Label {
             id: downspeed
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "down: " + Pretty.prettyFileSize(transmission.downSpeed) + "/S"
+            text: "down: " + Pretty.prettyFileSize(transmission.downSpeed) + "/s"
         }
     }
 

@@ -56,13 +56,13 @@ public slots:
 
     virtual QByteArray make()
     {
+        request.object.remove("tag");
+        request.object.insert("tag", tag());
         if(!preparationDone){
-            request.object["tag"]      =tag();
             request.object["arguments"]=request.arguments;
-            request.doc=QJsonDocument(request.object);
             preparationDone=true;
         }
-        return request.doc.toJson();
+        return QJsonDocument(request.object).toJson();
     }
 
     virtual void parseReplyJson(const QJsonDocument& json );
@@ -120,6 +120,18 @@ void serverChanged(QUrl arg);
 
 public slots:
 
+void flushBackloggedCommands(){
+    qDebug() << "flushing backlog of " << openCommands.size();
+    int lastTag = openCommands.lastKey();
+    int currentTag=openCommands.firstKey();
+    while(currentTag<=lastTag)
+    {
+        qDebug() << "sending command " << currentTag;
+        sendCommand(openCommands.take(currentTag));
+        currentTag++;
+    }
+}
+
 void gotReply(QNetworkReply* reply);
 
 void setserver(QUrl arg)
@@ -133,6 +145,7 @@ void setserver(QUrl arg)
 
 public:
 void sendCommand(RpcCommand* command);
+
 
 };
 

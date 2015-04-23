@@ -30,7 +30,7 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import transmission 1.0
+import harbour.transmissionremote 1.0
 
 
 Page {
@@ -45,6 +45,9 @@ Page {
             console.log("uploading torrent ", Qt.application.arguments[1])
             tm.uploadTorrent(Qt.application.arguments[1]);
         }
+        else{
+            tm.update();
+        }
     }
 
     Timer{
@@ -52,7 +55,7 @@ Page {
         interval: 1000
         onTriggered: transmission.update()
         triggeredOnStart: true
-        running: true
+        running: page.visible
         repeat:  true
     }
     SilicaListView{

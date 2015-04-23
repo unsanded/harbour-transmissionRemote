@@ -17,9 +17,7 @@ class Transmission : public QObject
     Q_PROPERTY(int downSpeed READ downSpeed WRITE setDownSpeed NOTIFY downSpeedChanged)
 
     QList<Torrent*> torrentList;
-
     QMap<int, Torrent*> torrentLookup;
-
     RpcConnection* connection;
 
     int m_upSpeed;

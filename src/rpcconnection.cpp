@@ -17,6 +17,7 @@ void RpcConnection::gotReply(QNetworkReply *reply)
     {
         qDebug() << "setting session cookie";
         sessidCookie=reply->rawHeader("X-Transmission-Session-Id");
+        flushBackloggedCommands();
         return;
     }
     if(reply->error()){
@@ -39,7 +40,6 @@ void RpcConnection::gotReply(QNetworkReply *reply)
         qWarning() << "at " << error.offset;
         qWarning() << doc;
         return;
-
     }
     int tag=doc.object()["tag"].toInt();
 
@@ -58,10 +58,16 @@ void RpcConnection::sendCommand(RpcCommand *command){
     //start at 7, just for fun
     //it is static because that helps detect migled messages with two RpcConnections
 
-    command->setTag(currentTag++);
 
+    command->setTag(currentTag++);
     openCommands.insert(command->tag(), command);
 
+    //only allow one pending command until we have a cookie
+    if(sessidCookie.isEmpty() && (openCommands.size()>1))
+    {
+        qDebug() << "skipping " << command->tag() << " because we have no cookie yet";
+        return;
+    }
 
 
     QNetworkRequest request ;
