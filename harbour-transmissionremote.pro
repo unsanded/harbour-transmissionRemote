@@ -10,7 +10,7 @@
 #   - translation filenames have to be changed
 
 # The name of your application
-TARGET = harbour-transmissionRemote
+TARGET = harbour-transmissionremote
 
 CONFIG += sailfishapp
 CONFIG += C++11
@@ -30,21 +30,21 @@ SOURCES += src/harbour-transmissionRemote.cpp \
 OTHER_FILES += qml/harbour-transmissionRemote.qml \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
-    rpm/harbour-transmissionRemote.changes.in \
-    rpm/harbour-transmissionRemote.spec \
-    rpm/harbour-transmissionRemote.yaml \
     translations/*.ts \
-    harbour-transmissionRemote.desktop \
     qml/pages/TorrentDelegate.qml \
     qml/pages/SettingsPage.qml \
     qml/pages/TorrentPage.qml \
     qml/pages/TorrentFileDelegate.qml \
-    qml/prettyFileSize.js
+    qml/prettyFileSize.js \
+    harbour-transmissionremote.desktop \
+    rpm/harbour-transmissionremote.spec \
+    rpm/harbour-transmissionremote.yaml \
+    rpm/harbour-transmissionremote.changes.in
 
 # to disable building translations every time, comment out the
 # following CONFIG line
 CONFIG += sailfishapp_i18n
-TRANSLATIONS += translations/harbour-transmissionRemote-de.ts
+TRANSLATIONS += translations/harbour-transmissionremote-de.ts
 
 HEADERS += \
     src/rpcCommands/torrentget.h \

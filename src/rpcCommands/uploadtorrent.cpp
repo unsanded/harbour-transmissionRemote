@@ -7,6 +7,7 @@ namespace RpcCommands {
 uploadTorrent::uploadTorrent(QString torrentFile, QObject *parent) :
     RpcCommand("torrent-add", parent)
 {
+    qDebug() << "uploading torrent file: " << torrentFile;
     QFile file(torrentFile);
 
     if(!file.exists()){
@@ -15,11 +16,13 @@ uploadTorrent::uploadTorrent(QString torrentFile, QObject *parent) :
     }
     file.open(QFile::ReadOnly);
 
-    if(!file.isOpen())
+    if(file.isOpen())
     {
         QByteArray data = file.readAll();
         request.arguments["metainfo"] = QString(data.toBase64());
     }
+    else
+        qWarning() << "torrentfile not open";
 }
 
 } // namespace RpcCommands
@@ -30,8 +33,12 @@ uploadTorrent::uploadTorrent(QString torrentFile, QObject *parent) :
 void RpcCommands::uploadTorrent::handleReply()
 {
     if(reply.result=="success"){
+        qDebug() << "succesfully uploaded torrent";
         emit gotTorrentInfo(reply.arguments);
     }
+    else
+      qWarning() << "torrent Upload failed " << reply.result
+                                     << reply.arguments;
 }
 
 

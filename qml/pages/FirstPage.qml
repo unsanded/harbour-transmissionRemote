@@ -41,8 +41,8 @@ Page {
 
     Component.onCompleted: {
         console.log("args",Qt.application.arguments)
-        if(Qt.application.aruments.length>1){
-            Console.log("uploading torrent ", Qt.arguments[1])
+        if(Qt.application.arguments.length>1){
+            console.log("uploading torrent ", Qt.application.arguments[1])
             tm.uploadTorrent(Qt.application.arguments[1]);
         }
     }
