@@ -34,21 +34,42 @@ import harbour.transmissionremote 1.0
 
 import "pages"
 import "cover"
-
+import "dialogs"
 
 
 ApplicationWindow
 {
+    Transmission{
+        id: tm
+        server: "http://" + st.transmissionHost + ":" + st.port + "/transmission/rpc"
+    }
+
     id: mainwindow
     Settings{
         id: st
     }
 
 
-    Transmission{
-        id: tm
-        server: "http://" + st.transmissionHost + ":" + st.port + "/transmission/rpc"
+    Component.onCompleted: {
+        tm.update(["downloadDir"]);
+        tm.update(["downloadDir"]);
+        console.log("args",Qt.application.arguments)
+        if(Qt.application.arguments.length>1){
+                    pageStack.push
+                   (
+                       Qt.resolvedUrl("dialogs/AddTorrentDialog.qml"),
+                       {
+                            "settings": st,
+                            "tm": tm,
+                            "TorrentFile": Qt.application.arguments[1]
+                        }
+                   )
+        }
+        else{
+            tm.update();
+        }
     }
+
 
     initialPage: Component { FirstPage {
                   transmission:  tm

@@ -17,7 +17,7 @@ TorrentGet::TorrentGet(QList<int> ids, QStringList fields, QObject *parent) :
         fields << "percentDone";
     if(!fields.contains("eta"))
         fields << "eta";
-
+    if(!fields.contains("downloadDir"))
     if(!torrentIds.empty())
     {
         QVariantList torrIds;

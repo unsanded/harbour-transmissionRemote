@@ -20,9 +20,9 @@ Torrent *Transmission::getTorrent(int id)
     return torrentLookup[id];
 }
 
-void Transmission::update()
+void Transmission::update(QStringList fields)
 {
-    TorrentGet* getCommand= new TorrentGet;
+    TorrentGet* getCommand= new TorrentGet(QList<int>(), fields);
     connect(
                 getCommand, SIGNAL(gotTorrentInfo(QJsonObject& )),
                 this, SLOT(onTorrentData( QJsonObject& ))
@@ -50,9 +50,10 @@ void Transmission::updateStats()
     connection->sendCommand(command);
 }
 
-void Transmission::uploadTorrent(QString filename)
+void Transmission::uploadTorrent(QString filename, bool start, QString location)
 {
-    RpcCommands::uploadTorrent* command = new RpcCommands::uploadTorrent(filename, this);
+    RpcCommands::UploadTorrent* command = new RpcCommands::UploadTorrent(filename, start, location, this);
+
     connect(
                 command, SIGNAL(gotTorrentInfo(QJsonObject&)),
                 this,       SLOT(onTorrentData(QJsonObject&))
@@ -72,6 +73,12 @@ void Transmission::onTorrentData(QJsonObject& data)
         t->setid(id);
         torrentLookup.insert(id, t);
         torrentList.append(t);
+        if(data.contains("downloadDir"))
+        {
+            QDir dir(data["downloadDir"].toString());
+            dir.cdUp();
+            addSaveLocation(dir.path());
+        }
         emit torrentsChanged(torrents());
     }
     t->updateFields(data);

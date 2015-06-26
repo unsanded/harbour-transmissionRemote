@@ -31,6 +31,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import harbour.transmissionremote 1.0
+import "../dialogs"
 
 
 Page {
@@ -39,16 +40,10 @@ Page {
     property Transmission transmission
     property Settings settings
 
-    Component.onCompleted: {
-        console.log("args",Qt.application.arguments)
-        if(Qt.application.arguments.length>1){
-            console.log("uploading torrent ", Qt.application.arguments[1])
-            tm.uploadTorrent(Qt.application.arguments[1]);
-        }
-        else{
-            tm.update();
-        }
-    }
+
+
+
+
 
     Timer{
         id:updateTimer

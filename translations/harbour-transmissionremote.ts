@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
+    <name>AddTorrentDialog</name>
+    <message>
+        <location filename="../qml/dialogs/AddTorrentDialog.qml" line="32"/>
+        <source>start downloading</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CoverPage</name>
     <message>
         <location filename="../qml/cover/CoverPage.qml" line="59"/>
@@ -12,12 +20,12 @@
 <context>
     <name>FirstPage</name>
     <message>
-        <location filename="../qml/pages/FirstPage.qml" line="79"/>
+        <location filename="../qml/pages/FirstPage.qml" line="74"/>
         <source>settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/pages/FirstPage.qml" line="89"/>
+        <location filename="../qml/pages/FirstPage.qml" line="84"/>
         <source>refresh</source>
         <translation type="unfinished"></translation>
     </message>
