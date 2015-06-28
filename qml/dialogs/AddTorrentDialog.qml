@@ -13,13 +13,14 @@ Dialog {
         tm.uploadTorrent(torrentFile, autoStartSwitch.checked, locationInput.text);
     }
     Column{
+        id: settingsColumn
         VerticalScrollDecorator{}
         width: parent.width
         spacing: 10;
         DialogHeader{
             id: header
-            cancelText: "cancel"
-            acceptText: "add torrent"
+            cancelText: qsTr("cancel")
+            acceptText: qsTr("add torrent")
         }
         Row{
             height: autoStartSwitch
@@ -34,26 +35,29 @@ Dialog {
         }
         TextField{
             id: locationInput
-            label:  "download location"
+            label:  qsTr("download location")
             width: parent.width
-            placeholderText: "/path/to/download/"
+            placeholderText: qsTr("path to download to")
         }
-        SilicaListView{
-            width: parent.width
-            model: tm.saveLocations
+    }
+    ListView{
+        width: parent.width
+        model: tm.saveLocations
+        height: contentHeight
 
-            delegate: BackgroundItem{
-                height: locationSuggestion.height
-                onClicked: {
-                    locationInput.text = modelData
-                }
-                Label{
-                    id: locationSuggestion
-                    text: modelData
-                    width: parent.width
-                }
+        delegate: BackgroundItem{
+            height: locationSuggestion.height + 10
+            onClicked: {
+                locationInput.text = modelData
+            }
+            Label{
+                id: locationSuggestion
+                text: modelData
+                width: parent.width
+                anchors.verticalCenter: parent.verticalCenter
+                elide: Text.ElideMiddle
+                color: Theme.secondary
             }
         }
-
     }
 }
