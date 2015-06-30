@@ -4,10 +4,10 @@
 #include <QObject>
 #include <QVariantMap>
 #include <QQmlListProperty>
-#include "rpcconnection.h"
+#include "torrentclient.h"
 #include "torrentfile.h"
+#include "torrentclient.h"
 
-#define torrentFields {"name", "percentDone", "eta", "fileStats", "files", "downloadDir", "errorString", "trackers","rateDownload", "rateUpload", "sizeWhenDone"}
 
 class Torrent : public QObject
 {
@@ -19,6 +19,8 @@ class Torrent : public QObject
 
     Q_PROPERTY(QQmlListProperty<TorrentFile> files READ files NOTIFY filesChanged)
 
+    QVariantMap extraData;
+
     //TODO: figure out best way to represent state
 
     QString m_name;
@@ -29,13 +31,11 @@ class Torrent : public QObject
 
     QVariantMap fields;
 
-    RpcConnection* connection;
-
     QList<TorrentFile*> fileList;
     QMap<QString, TorrentFile*> fileLookup;
 
 public:
-    explicit Torrent( RpcConnection* connection=0, QObject *parent = 0);
+    explicit Torrent( TorrentClient *parent=0);
     explicit Torrent( const Torrent& other );
 
 
@@ -78,7 +78,7 @@ public slots:
  * @brief updateFields updates the torrent data with the data in freshData
  * @param freshData JsonObject describing a torrent.
  */
-void updateFields(QJsonObject& freshData);
+void updateFields(QVariantMap& freshData);
 
 
 void fullUpdate();

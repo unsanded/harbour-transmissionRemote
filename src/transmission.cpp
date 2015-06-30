@@ -1,36 +1,44 @@
 #include "transmission.h"
-#include "rpcCommands/torrentget.h"
-#include "rpcCommands/uploadtorrent.h"
-#include "rpcCommands/sessionstats.h"
+#include "transmissionCommands/sessionstats.h"
+#include "transmissionCommands/torrentget.h"
+#include "transmissionCommands/uploadtorrent.h"
 #include "rpcconnection.h"
+#include "torrent.h"
 
-using namespace RpcCommands;
+#include <QtAlgorithms>
+
+using namespace transmissionCommands;
 
 Transmission::Transmission(QObject *parent) :
-    QObject(parent)
+    TorrentClient(parent)
 {
-
-    m_upSpeed=0;
-    m_downSpeed=0;
-    connection=NULL;
+    connection=nullptr;
 }
 
-Torrent *Transmission::getTorrent(int id)
+Torrent* Transmission::getTorrent(const QVariant id) const
 {
-    return torrentLookup[id];
+    return torrentLookup[id.toInt()];
 }
 
-void Transmission::update(QStringList fields)
+bool Transmission::connectToServer()
 {
-    TorrentGet* getCommand= new TorrentGet(QList<int>(), fields);
+    connection = new JsonRpcConnection(server(), this);
+    return true;
+}
+
+
+void Transmission::updateTorrents(const QVariantList& ids, const QStringList& fields)
+{
+
+    TorrentGet* getCommand= new TorrentGet(ids, fields);
     connect(
-                getCommand, SIGNAL(gotTorrentInfo(QJsonObject& )),
-                this, SLOT(onTorrentData( QJsonObject& ))
-            );
+                getCommand, SIGNAL(gotTorrentInfo(QVariantMap&)),
+                this, SLOT(onTorrentData(QVariantMap&) )
+                );
     connect(
                 getCommand, SIGNAL(gotReply()),
                 this      , SLOT(onUpdateDone())
-            );
+                );
     connection->sendCommand(getCommand);
 }
 
@@ -38,46 +46,50 @@ void Transmission::updateStats()
 {
     SessionStats*  command = new SessionStats(this);
     connect(
-              command, SIGNAL(gotUpspeed(int)),
+                command, SIGNAL(gotUpspeed(int)),
                 this, SLOT(setUpSpeed(int))
-            );
+                );
 
     connect(
-              command, SIGNAL(gotDownSpeed(int)),
+                command, SIGNAL(gotDownSpeed(int)),
                 this, SLOT(setDownSpeed(int))
-            );
+                );
 
     connection->sendCommand(command);
 }
 
 void Transmission::uploadTorrent(QString filename, bool start, QString location)
 {
-    RpcCommands::UploadTorrent* command = new RpcCommands::UploadTorrent(filename, start, location, this);
+    transmissionCommands::UploadTorrent* command = new transmissionCommands::UploadTorrent(filename, start, location, this);
 
     connect(
-                command, SIGNAL(gotTorrentInfo(QJsonObject&)),
-                this,       SLOT(onTorrentData(QJsonObject&))
+                command, SIGNAL(gotTorrentInfo(QVariantMap&)),
+                this,       SLOT(onTorrentData(QVariantMap&))
            );
 
     connection->sendCommand(command);
 
 }
 
-void Transmission::onTorrentData(QJsonObject& data)
+void Transmission::onTorrentData(QVariantMap& data)
 {
     int id=data["id"].toInt();
     Torrent* t= torrentLookup[id];
     if(!t){
         qDebug() << "new torent " <<  id;
-        t=new Torrent(connection, this);
+        t=new Torrent(this);
         t->setid(id);
         torrentLookup.insert(id, t);
         torrentList.append(t);
         if(data.contains("downloadDir"))
         {
-            QDir dir(data["downloadDir"].toString());
-            dir.cdUp();
-            addSaveLocation(dir.path());
+            QString dir = data["downloadDir"].toString();
+            //go to parent directory
+            if(dir[1]==':')
+                dir.truncate(dir.lastIndexOf('\\', -2));
+            else
+                dir.truncate(dir.lastIndexOf('/', -2));
+            addSaveLocation(dir);
         }
         emit torrentsChanged(torrents());
     }
@@ -87,6 +99,20 @@ void Transmission::onTorrentData(QJsonObject& data)
 void Transmission::onUpdateDone()
 {
 }
+
+void Transmission::setServer(QUrl arg)
+{
+    if (!connection){
+        connection=new JsonRpcConnection(arg, this);
+        emit serverChanged(arg);
+    }
+    else if (connection->server() != arg)
+    {
+        connection->setserver(arg);
+        emit serverChanged(arg);
+    }
+}
+
 
 
 

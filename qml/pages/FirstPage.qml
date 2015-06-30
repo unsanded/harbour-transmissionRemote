@@ -48,7 +48,7 @@ Page {
     Timer{
         id:updateTimer
         interval: 1000
-        onTriggered: transmission.update()
+        onTriggered: transmission.updateTorrents()
         triggeredOnStart: true
         running: page.visible
         repeat:  true

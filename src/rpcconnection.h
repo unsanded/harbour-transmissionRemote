@@ -12,85 +12,52 @@
 class RpcConnection;
 
 class RpcCommand: public QObject{
-    Q_PROPERTY(int tag READ tag WRITE setTag NOTIFY tagChanged)
     Q_OBJECT
-    int m_tag;
 
     friend class RpcConnection;
 protected:
 
     bool preparationDone;
    struct{
-        QJsonObject arguments;
+        QVariantMap arguments;
         QString result ; // should contain "success" after response is parsed
    } reply;
 
    struct{
-        QJsonObject object;
-        QJsonObject arguments;
-        QJsonDocument doc;
+        QVariantMap object;
+        QVariantMap arguments;
+        QByteArray blob;
    } request;
 
    QNetworkReply* networkReply;
 
 
    public:
-    RpcCommand(QString method, QObject* parent=0):
+    RpcCommand(const char * method, QObject* parent=0):
         QObject(parent)
     {
         request.object["method"]=method;
         preparationDone=false;
     }
 
-    //to make commands sortable
-    bool operator<(RpcCommand& other){
-        return tag()< other.tag();
-    }
+    public slots:
 
-    int tag() const
-    {
-        return m_tag;
-    }
-
-public slots:
-
-    virtual QByteArray make()
-    {
-        request.object.remove("tag");
-        request.object.insert("tag", tag());
-        if(!preparationDone){
-            request.object["arguments"]=request.arguments;
-            preparationDone=true;
-        }
-        return QJsonDocument(request.object).toJson();
-    }
-
-    virtual void parseReplyJson(const QJsonDocument& json );
+    virtual QByteArray make()=0;
 
     virtual void handleReply(){}
 
-protected:
-    void setTag(int arg)
-    {
-        if (m_tag != arg) {
-            m_tag = arg;
-            emit tagChanged(arg);
-        }
-    }
-
-signals:
+    signals:
     void gotReply();
 
     /**
      * @brief gotTorrentInfo should be emitted whenever data about a torrent becomes available.
      *
-     * @param fields A JsonObject containing at least the *id* filed.
+     * @param fields A QVariantMap containing at least the *id* filed.
      */
-    void gotTorrentInfo(QJsonObject& fields);
+    void gotTorrentInfo(QVariantMap& fields);
 
-    //this should never be usefull. it is just here because tag is a Q_property
-    void tagChanged(int arg);
 };
+
 
 class RpcConnection : public QObject
 {
@@ -99,10 +66,11 @@ class RpcConnection : public QObject
     Q_PROPERTY(QUrl server READ server WRITE setserver NOTIFY serverChanged)
 
     QUrl m_server;
+
+protected:
     QByteArray sessidCookie;
     QNetworkAccessManager networkManager;
 
-    QMap<int, RpcCommand*> openCommands;
 
 public:
     explicit RpcConnection(QUrl server, QObject *parent = 0);
@@ -120,19 +88,8 @@ void serverChanged(QUrl arg);
 
 public slots:
 
-void flushBackloggedCommands(){
-    qDebug() << "flushing backlog of " << openCommands.size();
-    int lastTag = openCommands.lastKey();
-    int currentTag=openCommands.firstKey();
-    while(currentTag<=lastTag)
-    {
-        qDebug() << "sending command " << currentTag;
-        sendCommand(openCommands.take(currentTag));
-        currentTag++;
-    }
-}
-
-void gotReply(QNetworkReply* reply);
+virtual void sendCommand(RpcCommand* command)=0;
+virtual void gotReply(QNetworkReply* reply)=0;
 
 void setserver(QUrl arg)
 {
@@ -141,11 +98,6 @@ void setserver(QUrl arg)
         emit serverChanged(arg);
     }
 }
-
-
-public:
-void sendCommand(RpcCommand* command);
-
 
 };
 

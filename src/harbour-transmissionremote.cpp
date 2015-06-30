@@ -32,6 +32,7 @@
 
 #include <sailfishapp.h>
 #include "torrent.h"
+#include "torrentclient.h"
 #include "transmission.h"
 
 #include "settings.h"
@@ -51,8 +52,11 @@ int main(int argc, char *argv[])
     qRegisterMetaType<QList<Torrent*> >("QObjectList");
     qmlRegisterType<Torrent>     ("harbour.transmissionremote", 1, 0, "Torrent");
     qmlRegisterType<TorrentFile> ("harbour.transmissionremote", 1, 0, "TorrentFile");
+
     qmlRegisterType<Transmission>("harbour.transmissionremote", 1, 0, "Transmission");
     qmlRegisterType<Settings>("harbour.transmissionremote", 1, 0, "Settings");
+
+    qmlRegisterUncreatableType<TorrentClient>("harbour.transmissionremote", 1, 0, "TorrentClient", "TorrentClient is abstract. You need to use a specific type of torrent client");
     return SailfishApp::main(argc, argv);
 }
 

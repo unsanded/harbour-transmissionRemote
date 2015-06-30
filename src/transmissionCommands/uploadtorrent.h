@@ -1,15 +1,15 @@
 #ifndef RPCCOMMANDS_UPLOADTORRENT_H
 #define RPCCOMMANDS_UPLOADTORRENT_H
-#include "../rpcconnection.h"
+#include "../jsonrpcconnection.h"
 
 #include <QFile>
 
-namespace RpcCommands {
+namespace transmissionCommands {
 /**
  * @brief The uploadTorrent class
  * RPC command to upload a local torrent file
  */
-class UploadTorrent : public RpcCommand
+class UploadTorrent : public JsonRpcCommand
 {
     Q_OBJECT
     Q_PROPERTY(bool autoStart READ autoStart WRITE setAutoStart NOTIFY autoStartChanged)

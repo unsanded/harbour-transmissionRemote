@@ -2,6 +2,7 @@
 #define TORRENTFILE_H
 
 #include <QObject>
+#include <QVariantMap>
 
 class Torrent;
 
@@ -30,9 +31,9 @@ class TorrentFile : public QObject
 
 protected:
     explicit TorrentFile(QObject *parent = 0);
-    explicit TorrentFile(QJsonObject &doc, QObject *parent = 0);
+    explicit TorrentFile(const QVariantMap &doc, QObject *parent = 0);
 protected slots:
-    void     parseJson(QJsonObject &doc);
+    void     updateData(const QVariantMap  &data);
 public:
 
     QString fileName() const

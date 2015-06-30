@@ -4,8 +4,28 @@
 <context>
     <name>AddTorrentDialog</name>
     <message>
-        <location filename="../qml/dialogs/AddTorrentDialog.qml" line="32"/>
+        <location filename="../qml/dialogs/AddTorrentDialog.qml" line="26"/>
+        <source>cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/dialogs/AddTorrentDialog.qml" line="27"/>
+        <source>add torrent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/dialogs/AddTorrentDialog.qml" line="37"/>
         <source>start downloading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/dialogs/AddTorrentDialog.qml" line="42"/>
+        <source>download location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/dialogs/AddTorrentDialog.qml" line="44"/>
+        <source>path to download to</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

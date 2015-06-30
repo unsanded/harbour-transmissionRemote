@@ -18,15 +18,18 @@ CONFIG += C++11
 QT += network
 
 SOURCES += \
-    src/rpcCommands/torrentget.cpp \
     src/rpcconnection.cpp \
     src/torrent.cpp \
     src/transmission.cpp \
     src/settings.cpp \
     src/torrentfile.cpp \
-    src/rpcCommands/uploadtorrent.cpp \
-    src/rpcCommands/sessionstats.cpp \
-    src/harbour-transmissionremote.cpp
+    src/harbour-transmissionremote.cpp \
+    src/torrentclient.cpp \
+    src/transmissionCommands/sessionstats.cpp \
+    src/transmissionCommands/torrentget.cpp \
+    src/transmissionCommands/uploadtorrent.cpp \
+    torrentdata.cpp \
+    src/jsonrpcconnection.cpp
 
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
@@ -50,14 +53,17 @@ CONFIG += sailfishapp_i18n
 TRANSLATIONS += translations/harbour-transmissionremote-de.ts
 
 HEADERS += \
-    src/rpcCommands/torrentget.h \
     src/rpcconnection.h \
     src/torrent.h \
     src/transmission.h \
     src/settings.h \
     src/torrentfile.h \
-    src/rpcCommands/uploadtorrent.h \
-    src/rpcCommands/sessionstats.h
+    src/torrentclient.h \
+    src/transmissionCommands/sessionstats.h \
+    src/transmissionCommands/torrentget.h \
+    src/transmissionCommands/uploadtorrent.h \
+    torrentdata.h \
+    src/jsonrpcconnection.h
 
 RESOURCES +=
 

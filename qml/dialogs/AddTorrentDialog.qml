@@ -12,6 +12,10 @@ Dialog {
         console.log("uploading torrent ", torrentFile)
         tm.uploadTorrent(torrentFile, autoStartSwitch.checked, locationInput.text);
     }
+    Component.onCompleted: {
+        tm.updateTorrents([], []);
+    }
+
     Column{
         id: settingsColumn
         VerticalScrollDecorator{}
@@ -44,6 +48,7 @@ Dialog {
         width: parent.width
         model: tm.saveLocations
         height: contentHeight
+        anchors.top: settingsColumn.bottom
 
         delegate: BackgroundItem{
             height: locationSuggestion.height + 10
@@ -56,7 +61,6 @@ Dialog {
                 width: parent.width
                 anchors.verticalCenter: parent.verticalCenter
                 elide: Text.ElideMiddle
-                color: Theme.secondary
             }
         }
     }

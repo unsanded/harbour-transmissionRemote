@@ -1,17 +1,17 @@
 #ifndef RPCCOMMANDS_TORRENTGET_H
 #define RPCCOMMANDS_TORRENTGET_H
-#include "../rpcconnection.h"
+#include "../jsonrpcconnection.h"
 #include <QJsonObject>
 
-namespace RpcCommands {
+namespace transmissionCommands {
 
-class TorrentGet : public RpcCommand
+class TorrentGet : public JsonRpcCommand
 {
     Q_OBJECT
-    QList<int> torrentIds;
+    QVariantList torrentIds;
     QStringList fields;
 public:
-    explicit TorrentGet(QList<int> ids = QList<int>(), QStringList fields = QStringList(), QObject *parent = 0);
+    explicit TorrentGet(QVariantList ids =  QVariantList(), const QStringList& f = QStringList(), QObject *parent = 0);
     virtual void handleReply();
 
 signals:

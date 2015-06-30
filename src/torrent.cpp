@@ -1,29 +1,26 @@
 #include "torrent.h"
-#include "rpcCommands/torrentget.h"
 #include "torrentfile.h"
 #include <QJsonObject>
 #include <QJsonArray>
 
 #include <QDebug>
-Torrent::Torrent(RpcConnection* connection, QObject *parent) :
-    QObject(parent),
-    connection(connection)
+Torrent::Torrent(TorrentClient *parent) :
+    QObject(parent)
 {
-    setfileCount(1);
+    setfileCount(0);
 }
 
 Torrent::Torrent(const Torrent &other):
-    QObject(parent())
+    QObject((TorrentClient*) other.parent())
 {
     m_fileCount=other.m_fileCount;
-    connection=other.connection;
     setParent(other.parent());
     setid(other.id());
     setname(other.name());
 }
 
 
-void Torrent::updateFields(QJsonObject &freshData){
+void Torrent::updateFields(QVariantMap &freshData){
 
 
     if(freshData.contains("name"))
@@ -32,8 +29,8 @@ void Torrent::updateFields(QJsonObject &freshData){
         setpercentage(freshData["percentDone"].toDouble() * 100.0);
 
     if(freshData.contains("files")){
-        for(auto iter : freshData["files"].toArray()){
-            QJsonObject fileObject=iter.toObject();
+        for(auto iter : freshData["files"].toList()){
+            QVariantMap fileObject=iter.toMap();
 
             QString filename  = fileObject["name"].toString() ;
             TorrentFile* file = fileLookup[filename];
@@ -42,16 +39,16 @@ void Torrent::updateFields(QJsonObject &freshData){
                     fileLookup.insert(filename, file);
                     fileList.append(file);
             }
-            file->parseJson(fileObject);
+            file->updateData(fileObject);
         }
         if(freshData.contains("fileStats")){
             int i=0;
-            for(auto iter : freshData["fileStats"].toArray()){
+            for(auto iter : freshData["fileStats"].toList()){
 
                 if(i>=fileList.size()) break;
 
-                auto obj=iter.toObject();
-                fileList[i++]->parseJson(obj);
+                auto obj=iter.toMap();
+                fileList[i++]->updateData(obj);
             }
         }
         setfileCount(fileList.size());
@@ -61,13 +58,17 @@ void Torrent::updateFields(QJsonObject &freshData){
 
 void Torrent::fullUpdate()
 {
-    QList<int> list;
+    QVariantList list;
     list << id();
-    RpcCommands::TorrentGet* command= new RpcCommands::TorrentGet(list, QStringList(torrentFields), this);
+    ((TorrentClient*) parent())->updateTorrents(list);
+
+    /*
+    RpcCommands::TorrentGet* command = new RpcCommands::TorrentGet(list, QStringList(torrentFields), this);
     connect(
                 command, SIGNAL(gotTorrentInfo(QJsonObject&)),
                 this     , SLOT(updateFields  (QJsonObject&))
             );
 
     connection->sendCommand(command);
+    */
 }

@@ -2,6 +2,29 @@
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
+    <name>AddTorrentDialog</name>
+    <message>
+        <source>start downloading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>add torrent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>download location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>path to download to</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CoverPage</name>
     <message>
         <source>My Cover</source>

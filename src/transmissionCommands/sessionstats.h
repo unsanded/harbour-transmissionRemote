@@ -1,11 +1,11 @@
-#include <src/rpcconnection.h>
+#include <src/jsonrpcconnection.h>
 
 #ifndef RPCCOMMANDS_SESSIONSTATS_H
 #define RPCCOMMANDS_SESSIONSTATS_H
 
-namespace RpcCommands {
+namespace transmissionCommands {
 
-class SessionStats : public RpcCommand
+class SessionStats : public JsonRpcCommand
 {
     Q_OBJECT
 public:

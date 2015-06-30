@@ -8,13 +8,13 @@ TorrentFile::TorrentFile(QObject *parent) :
 
 }
 
-TorrentFile::TorrentFile(QJsonObject &doc, QObject *parent):
+TorrentFile::TorrentFile(const QVariantMap &doc, QObject *parent):
     QObject(parent)
 {
-    parseJson(doc);
+    updateData(doc);
 }
 
-void TorrentFile::parseJson(QJsonObject &doc)
+void TorrentFile::updateData(const QVariantMap &doc)
 {
     if(doc.contains("name"))
         setFileName(doc["name"].toString());

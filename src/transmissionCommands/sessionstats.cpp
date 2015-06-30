@@ -1,18 +1,18 @@
 #include "sessionstats.h"
 
-namespace RpcCommands {
+namespace transmissionCommands {
 
 SessionStats::SessionStats(QObject *parent) :
-    RpcCommand("session-stats", parent)
+    JsonRpcCommand("session-stats", parent)
 {
 
 }
 
-} // namespace RpcCommands
-
-
-void RpcCommands::SessionStats::handleReply()
+void SessionStats::handleReply()
 {
     emit gotDownSpeed(reply.arguments["downloadSpeed"].toInt());
     emit gotUpspeed(reply.arguments["uploadSpeed"].toInt());
 }
+
+} // namespace transmissionCommands
+

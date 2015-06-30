@@ -51,8 +51,8 @@ ApplicationWindow
 
 
     Component.onCompleted: {
-        tm.update(["downloadDir"]);
-        tm.update(["downloadDir"]);
+        tm.updateTorrents([], ["downloadDir"]);
+        tm.updateTorrents([], ["downloadDir"]);
         console.log("args",Qt.application.arguments)
         if(Qt.application.arguments.length>1){
                     pageStack.push
@@ -61,7 +61,7 @@ ApplicationWindow
                        {
                             "settings": st,
                             "tm": tm,
-                            "TorrentFile": Qt.application.arguments[1]
+                            "torrentFile": Qt.application.arguments[1]
                         }
                    )
         }

@@ -1,11 +1,10 @@
 #include "uploadtorrent.h"
-
 #include <QFile>
 
-namespace RpcCommands {
+namespace transmissionCommands {
 
 UploadTorrent::UploadTorrent(QString torrentFile, bool autostart, QString downloadDir, QObject *parent) :
-    RpcCommand("torrent-add", parent)
+    JsonRpcCommand("torrent-add", parent)
 {
     qDebug() << "uploading torrent file: " << torrentFile;
     QFile file(torrentFile);
@@ -32,12 +31,7 @@ UploadTorrent::UploadTorrent(QString torrentFile, bool autostart, QString downlo
 
 }
 
-} // namespace RpcCommands
-
-
-
-
-void RpcCommands::UploadTorrent::handleReply()
+void UploadTorrent::handleReply()
 {
     if(reply.result=="success"){
         qDebug() << "succesfully uploaded torrent";
@@ -48,4 +42,5 @@ void RpcCommands::UploadTorrent::handleReply()
                                      << reply.arguments;
 }
 
+} // namespace transmissionCommands
 
