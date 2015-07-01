@@ -5,7 +5,7 @@ import harbour.transmissionremote 1.0
 Item {
     id: root
     property ListView listView: ListView.view
-    property Transmission transmission
+    property QtObject client
 
     signal onClicked
     width: listView.width
@@ -17,7 +17,7 @@ Item {
         onClicked:     {
                           pageStack.push(
                            Qt.resolvedUrl("TorrentPage.qml"),
-                           {"torrent": transmission.getTorrent(model.id)}
+                           {"torrent": client.getTorrent(model.id)}
                           )
                         }
 

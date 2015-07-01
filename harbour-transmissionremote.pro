@@ -28,8 +28,8 @@ SOURCES += \
     src/transmissionCommands/sessionstats.cpp \
     src/transmissionCommands/torrentget.cpp \
     src/transmissionCommands/uploadtorrent.cpp \
-    torrentdata.cpp \
-    src/jsonrpcconnection.cpp
+    src/jsonrpcconnection.cpp \
+    src/clienttypes.cpp
 
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
@@ -45,7 +45,8 @@ OTHER_FILES += \
     rpm/harbour-transmissionremote.yaml \
     rpm/harbour-transmissionremote.changes.in \
     qml/harbour-transmissionremote.qml \
-    qml/dialogs/AddTorrentDialog.qml
+    qml/dialogs/AddTorrentDialog.qml \
+    qml/dialogs/ClientSettingsDialog.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -62,8 +63,8 @@ HEADERS += \
     src/transmissionCommands/sessionstats.h \
     src/transmissionCommands/torrentget.h \
     src/transmissionCommands/uploadtorrent.h \
-    torrentdata.h \
-    src/jsonrpcconnection.h
+    src/jsonrpcconnection.h \
+    src/clienttypes.h
 
 RESOURCES +=
 

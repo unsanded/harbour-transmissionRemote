@@ -37,7 +37,7 @@ import "../dialogs"
 Page {
     id: page
 
-    property Transmission transmission
+    property QtObject client
     property Settings settings
 
 
@@ -48,7 +48,7 @@ Page {
     Timer{
         id:updateTimer
         interval: 1000
-        onTriggered: transmission.updateTorrents()
+        onTriggered: client.updateTorrents()
         triggeredOnStart: true
         running: page.visible
         repeat:  true
@@ -63,9 +63,9 @@ Page {
             title: "Transmission"
         }
 
-        model: transmission.torrents
+        model: client.torrents
         delegate: TorrentDelegate{
-            transmission: page.transmission
+            client: page.client
         }
 
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
@@ -82,7 +82,7 @@ Page {
             }//MenuItem
             MenuItem {
                 text: qsTr("refresh")
-                onClicked:transmission.update();
+                onClicked:client.update();
             }//MenuItem
         }//pulldownmenu
     }//

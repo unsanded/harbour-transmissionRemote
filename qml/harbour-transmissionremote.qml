@@ -39,45 +39,54 @@ import "dialogs"
 
 ApplicationWindow
 {
-    Transmission{
-        id: tm
-        server: "http://" + st.transmissionHost + ":" + st.port + "/transmission/rpc"
-    }
 
-    id: mainwindow
+    property  QtObject firstClient
     Settings{
         id: st
     }
 
 
+
     Component.onCompleted: {
-        tm.updateTorrents([], ["downloadDir"]);
-        tm.updateTorrents([], ["downloadDir"]);
+        if(st.clients.size === 0){
+                pageStack.push
+               (
+                   Qt.resolvedUrl("dialogs/ClientSettingsDialog.qml"),
+                   {
+                        "st": st
+                    }
+                )
+        }
+
+        firstClient = st.clients[0];
+
+        firstClient.updateTorrents([], ["downloadDir"]);
         console.log("args",Qt.application.arguments)
+
         if(Qt.application.arguments.length>1){
                     pageStack.push
                    (
                        Qt.resolvedUrl("dialogs/AddTorrentDialog.qml"),
                        {
                             "settings": st,
-                            "tm": tm,
+                            "client": firstClient,
                             "torrentFile": Qt.application.arguments[1]
                         }
                    )
         }
         else{
-            tm.update();
+            client.update();
         }
     }
 
 
     initialPage: Component { FirstPage {
-                  transmission:  tm
+                  client:  firstClient
                   settings: st
         } }
 
     cover: CoverPage{
-        transmission: tm
+        client: firstClient
     }
 }
 

@@ -1,7 +1,6 @@
 #ifndef RPCCOMMANDS_TORRENTGET_H
 #define RPCCOMMANDS_TORRENTGET_H
 #include "../jsonrpcconnection.h"
-#include <QJsonObject>
 
 namespace transmissionCommands {
 

@@ -4,10 +4,14 @@
 JsonRpcConnection::JsonRpcConnection(QUrl server, QObject *parent) :
     RpcConnection(server, parent)
 {
+    cookieIsSet = false;
+    contentType = "application/json";
 }
 
 void JsonRpcConnection::flushBackloggedCommands(){
     qDebug() << "flushing backlog of " << openCommands.size();
+    if (openCommands.empty()) return;
+
     int lastTag = openCommands.lastKey();
     int currentTag=openCommands.firstKey();
     while(currentTag<=lastTag)
@@ -20,11 +24,14 @@ void JsonRpcConnection::flushBackloggedCommands(){
 
 void JsonRpcConnection::gotReply(QNetworkReply *reply)
 {
-    int statusCode =reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if(statusCode==409)
     {
         qDebug() << "setting session cookie";
-        sessidCookie=reply->rawHeader("X-Transmission-Session-Id");
+        QString sessidCookie = reply->rawHeader("X-Transmission-Session-Id");
+
+        addHeader("X-Transmission-Session-Id", sessidCookie.toStdString().c_str());
+        cookieIsSet=true;
         flushBackloggedCommands();
         return;
     }
@@ -74,11 +81,12 @@ QByteArray JsonRpcCommand::make()
 {
     request.object.remove("tag");
     request.object.insert("tag", tag());
-    request.object["arguments"]=request.arguments;
+    request.object["arguments"] = request.arguments;
     request.blob = QJsonDocument::fromVariant(request.object).toJson();
-
+    qDebug() << "sending" << request.object["method"];
     return request.blob;
 }
+
 void JsonRpcCommand::parseReplyJson(const QJsonDocument &json ){
     reply.result   =json.object()["result"].toString();
     //TODO do something with result other than "success"

@@ -18,34 +18,61 @@ class TorrentClient : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Torrent> torrents READ torrents  NOTIFY torrentsChanged)
-    Q_PROPERTY(QUrl server READ server WRITE setServer NOTIFY serverChanged)
     Q_PROPERTY(int upSpeed READ upSpeed WRITE setUpSpeed NOTIFY upSpeedChanged)
     Q_PROPERTY(int downSpeed READ downSpeed WRITE setDownSpeed NOTIFY downSpeedChanged)
     Q_PROPERTY(QStringList saveLocations READ saveLocations NOTIFY saveLocationsChanged)
     Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
 
+    Q_PROPERTY(QString name READ name)
+    Q_PROPERTY(QString type READ clientType)
+
+    Q_PROPERTY(QString username READ username)
+    Q_PROPERTY(QString password READ password)
+    Q_PROPERTY(QString url READ url)
+
     //properties
+    QString m_name;
+
+    QString m_url;
+
 protected:
     QList<Torrent*> torrentList;
     int m_upSpeed;
     int m_downSpeed;
     QSet<QString> m_saveLocations;
+    QUrl m_server;
+    bool m_connected;
+
+    QString m_username, m_password;
+
+public:
+
+
 
     //propertie getters
     int upSpeed() const;
     int downSpeed() const;
     const QStringList saveLocations() const;
 
-    QUrl m_server;
-
-    bool m_connected;
+Q_INVOKABLE virtual QStringList getAllTorrentFields() const = 0;
 
 public:
-    explicit TorrentClient(QObject *parent = 0)
+
+
+    explicit TorrentClient(QString name, QString url, QString username="", QString password="", QObject *parent = 0)
         :QObject(parent)
     {
-        m_upSpeed=0;
-        m_downSpeed=0;
+
+        m_upSpeed = 0;
+        m_downSpeed = 0;
+        m_name = name;
+        m_username = username;
+        m_password = password;
+        m_url = url;
+    }
+
+    bool operator<(const TorrentClient& other){
+        return m_name < other.m_name;
     }
 
     /**
@@ -67,14 +94,35 @@ bool connected() const;
      * @param id the unique-per-torrent id of the torrent
      * @return  the torrent or null if no torrent has the id
      */
-    virtual Torrent* getTorrent(const QVariant id) const =0;
+    Q_INVOKABLE virtual Torrent* getTorrent(int id) const =0;
 
 
-/**
- * @brief server The server this client is connected to
- * @return  the server
- */
-QUrl server() const;
+
+QString name() const
+{
+    return m_name;
+}
+
+    /**
+     * @brief clientType indicates what type of torrentClient this is.
+     * @return  a string. for example "transmission"
+     */
+    virtual const char* clientType()=0;
+
+QString password() const
+{
+    return m_password;
+}
+
+QString username() const
+{
+    return m_username;
+}
+
+QString url() const
+{
+    return m_url;
+}
 
 signals:
 
@@ -85,7 +133,11 @@ signals:
     void saveLocationsChanged(QStringList arg);
     void connectedChanged(bool arg);
 
+    void nameChanged(QString arg);
+
 public slots:
+
+
     /**
      * @brief connectToServer is called when server is changed.
      * @return true when the connection succeeds.
@@ -109,11 +161,17 @@ virtual void updateTorrents(const QVariantList& torrents = QVariantList(), const
 
 
 
-    void setServer(QUrl arg);
 
     void setUpSpeed(int arg);
 
     void setDownSpeed(int arg);
+    void setName(QString arg)
+    {
+        if (m_name != arg) {
+            m_name = arg;
+            emit nameChanged(arg);
+        }
+    }
 };
 
 

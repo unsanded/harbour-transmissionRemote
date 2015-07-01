@@ -1,6 +1,7 @@
 #include "torrentclient.h"
 #include "torrent.h"
 #include <QDebug>
+#include <QList>
 
 
 const QStringList TorrentClient::saveLocations() const
@@ -18,16 +19,6 @@ bool TorrentClient::addSaveLocation(QString location){
     return true;
 }
 
-void TorrentClient::setServer(QUrl arg)
-{
-    if (m_server != arg) {
-        m_server = arg;
-        emit serverChanged(arg);
-        m_connected = connectToServer();
-        emit connectedChanged(m_connected);
-    }
-}
-
 QQmlListProperty<Torrent> TorrentClient::torrents()
 {
     return QQmlListProperty<Torrent>((QObject*) this,  torrentList);
@@ -37,14 +28,6 @@ bool TorrentClient::connected() const
 {
     return m_connected;
 }
-
-QUrl TorrentClient::server() const
-{
-    return m_server;
-}
-
-
-
 
 int TorrentClient::downSpeed() const
 {

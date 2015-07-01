@@ -46,6 +46,7 @@ protected:
 
     virtual void handleReply(){}
 
+
     signals:
     void gotReply();
 
@@ -67,9 +68,17 @@ class RpcConnection : public QObject
 
     QUrl m_server;
 
+
+
 protected:
-    QByteArray sessidCookie;
+    void addHeader(QByteArray name, QByteArray value){
+        headers.append(QPair<QByteArray, QByteArray> (name, value));
+    }
+
     QNetworkAccessManager networkManager;
+    QList<QPair<QByteArray, QByteArray>> headers;
+
+    const char* contentType;
 
 
 public:
@@ -88,7 +97,22 @@ void serverChanged(QUrl arg);
 
 public slots:
 
-virtual void sendCommand(RpcCommand* command)=0;
+void addBasicAuthorisation(QString username, QString password);
+
+virtual void sendCommand(RpcCommand* command){
+        QNetworkRequest request ;
+        request.setUrl(server());
+
+        request.setHeader(QNetworkRequest::ContentTypeHeader, contentType);
+
+
+        for(auto header : headers)
+            request.setRawHeader(header.first, header.second);
+
+        networkManager.post(request,  command->make());
+
+}
+
 virtual void gotReply(QNetworkReply* reply)=0;
 
 void setserver(QUrl arg)

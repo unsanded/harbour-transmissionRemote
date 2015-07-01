@@ -1,6 +1,4 @@
 #include "torrentget.h"
-#include <QJsonArray>
-#include <QJsonObject>
 
 namespace transmissionCommands {
 
@@ -21,8 +19,9 @@ TorrentGet::TorrentGet(QVariantList ids, const QStringList& f, QObject *parent) 
         fields << "downloadDir";
     if(!torrentIds.empty())
     {
-        request.arguments["ids"] = QJsonArray::fromVariantList(torrentIds);
+        request.arguments["ids"] = torrentIds;
     }
+    qDebug() << "updating fields" << fields;
     request.arguments["fields"] = fields;
 
 }

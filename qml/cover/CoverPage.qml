@@ -31,12 +31,13 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import harbour.transmissionremote 1.0
+
 import "../prettyFileSize.js" as Pretty
 
 CoverBackground {
 
     id: cover
-    property Transmission transmission
+    property QtObject client
 
 
 
@@ -44,7 +45,7 @@ CoverBackground {
         running: (cover.status===2)
         triggeredOnStart: true
         onTriggered: {
-            transmission.updateStats();
+            client.updateStats();
         }
         repeat: true
         interval: 2000
@@ -61,12 +62,12 @@ CoverBackground {
         Label {
             id: upspeed
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "up: " + Pretty.prettyFileSize(transmission.upSpeed) + "/s"
+            text: "up: " + Pretty.prettyFileSize(client.upSpeed) + "/s"
         }
         Label {
             id: downspeed
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "down: " + Pretty.prettyFileSize(transmission.downSpeed) + "/s"
+            text: "down: " + Pretty.prettyFileSize(client.downSpeed) + "/s"
         }
     }
 

@@ -60,15 +60,12 @@ void Torrent::fullUpdate()
 {
     QVariantList list;
     list << id();
-    ((TorrentClient*) parent())->updateTorrents(list);
+    QStringList fields;// = ((TorrentClient*) parent())->getAllTorrentFields();
+    fields << "files";
+    fields << "wanted";
+    fields << "fileStats";
 
-    /*
-    RpcCommands::TorrentGet* command = new RpcCommands::TorrentGet(list, QStringList(torrentFields), this);
-    connect(
-                command, SIGNAL(gotTorrentInfo(QJsonObject&)),
-                this     , SLOT(updateFields  (QJsonObject&))
-            );
 
-    connection->sendCommand(command);
-    */
+    ((TorrentClient*) parent())->updateTorrents(list, fields);
+
 }

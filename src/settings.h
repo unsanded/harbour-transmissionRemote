@@ -3,51 +3,51 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QQmlListProperty>
+#include "torrentclient.h"
+
 
 class Settings : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString transmissionHost READ transmissionHost WRITE setTransmissionHost NOTIFY transmissionHostChanged)
-    Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
+
+    Q_PROPERTY(QQmlListProperty<TorrentClient> clients READ clients NOTIFY clientsChanged)
 
     QSettings settings;
 
+    QList<TorrentClient*> clientList;
+
+protected:
+    QMap<QString, TorrentClient *> m_clients;
 
 public:
     explicit Settings(QObject *parent = 0);
 
-QString transmissionHost() const
-{
-    return settings.value("transmissionHost").toString();
-}
+    ~Settings(){
+        saveClients();
+    }
 
-int port() const
+QQmlListProperty<TorrentClient> clients()
 {
-    return settings.value("transmissionPort", 9091).toInt();
+    clientList = m_clients.values();
+    return QQmlListProperty<TorrentClient>((QObject*) this, clientList);
 }
 
 signals:
 
-void transmissionHostChanged(QString arg);
 
-void portChanged(int arg);
+void clientsChanged(QQmlListProperty<TorrentClient> arg);
 
+public:
+Q_INVOKABLE TorrentClient* addClient(QString type, QString name, QString url, QString username, QString password);
+Q_INVOKABLE TorrentClient* getClient(QString name);
 public slots:
 
-void setTransmissionHost(QString arg)
-{
-    if (transmissionHost() != arg) {
-        settings.setValue("transmissionHost", arg);
-        emit transmissionHostChanged(arg);
-    }
-}
-void setPort(int arg)
-{
-    if (port() != arg) {
-        settings.setValue("port", arg);
-        emit portChanged(arg);
-    }
-}
+void saveClients();
+void loadClients();
+
+
+
 };
 
 #endif // SETTINGS_H

@@ -9,20 +9,23 @@
 
 using namespace transmissionCommands;
 
-Transmission::Transmission(QObject *parent) :
-    TorrentClient(parent)
+Transmission::Transmission(QString name, QString url, QString username, QString password, QObject *parent) :
+    TorrentClient(name, url, username, password, parent)
 {
-    connection=nullptr;
+    connectToServer();
 }
 
-Torrent* Transmission::getTorrent(const QVariant id) const
+Torrent* Transmission::getTorrent(int id) const
 {
-    return torrentLookup[id.toInt()];
+    return torrentLookup[id];
 }
 
 bool Transmission::connectToServer()
 {
-    connection = new JsonRpcConnection(server(), this);
+    connection = new JsonRpcConnection(url(), this);
+    if(!username().isEmpty() || !password().isEmpty()){
+        connection->addBasicAuthorisation(username(), password());
+    }
     return true;
 }
 
@@ -100,19 +103,8 @@ void Transmission::onUpdateDone()
 {
 }
 
-void Transmission::setServer(QUrl arg)
+QStringList Transmission::getAllTorrentFields() const
 {
-    if (!connection){
-        connection=new JsonRpcConnection(arg, this);
-        emit serverChanged(arg);
-    }
-    else if (connection->server() != arg)
-    {
-        connection->setserver(arg);
-        emit serverChanged(arg);
-    }
+    QStringList fields;
+    return fields;
 }
-
-
-
-

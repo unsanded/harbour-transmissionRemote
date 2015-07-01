@@ -12,12 +12,14 @@ class Transmission : public TorrentClient
 
     QMap<int, Torrent*> torrentLookup;
 public:
-    explicit Transmission(QObject *parent = 0);
+    explicit Transmission(QString name, QString url, QString username=QString(), QString password=QString(), QObject *parent = 0);
 
 
     RpcConnection* connection;
 
-    virtual Torrent* getTorrent(const QVariant id) const;
+    Q_INVOKABLE virtual Torrent* getTorrent(int id) const;
+
+    Q_INVOKABLE virtual QStringList getAllTorrentFields() const;
 
 public slots:
 
@@ -32,11 +34,13 @@ public slots:
     void onUpdateDone();
 
 
-    void setServer(QUrl arg);
 
     // TorrentClient interface
 public slots:
     virtual void updateTorrents(const QVariantList& torrents = QVariantList(), const QStringList& fields = QStringList());
+    virtual const char* clientType(){
+        return "transmission";
+    }
 };
 
 #endif // TRANSMISSION_H

@@ -32,7 +32,7 @@
 <context>
     <name>CoverPage</name>
     <message>
-        <location filename="../qml/cover/CoverPage.qml" line="59"/>
+        <location filename="../qml/cover/CoverPage.qml" line="60"/>
         <source>Transmission</source>
         <translation type="unfinished"></translation>
     </message>

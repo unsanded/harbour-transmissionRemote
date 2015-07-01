@@ -3,17 +3,17 @@ import Sailfish.Silica 1.0
 import harbour.transmissionremote 1.0
 
 Dialog {
-    property Transmission tm
+    property QtObject client
     property alias location: locationInput.text
 
     property string torrentFile
 
     onAccepted: {
         console.log("uploading torrent ", torrentFile)
-        tm.uploadTorrent(torrentFile, autoStartSwitch.checked, locationInput.text);
+        client.uploadTorrent(torrentFile, autoStartSwitch.checked, locationInput.text);
     }
     Component.onCompleted: {
-        tm.updateTorrents([], []);
+        client.updateTorrents([], []);
     }
 
     Column{
@@ -46,7 +46,7 @@ Dialog {
     }
     ListView{
         width: parent.width
-        model: tm.saveLocations
+        model: client.saveLocations
         height: contentHeight
         anchors.top: settingsColumn.bottom
 
