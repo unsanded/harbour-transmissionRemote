@@ -17,6 +17,7 @@ class RpcCommand: public QObject{
     friend class RpcConnection;
 protected:
 
+    QNetworkReply* networkReply;
     bool preparationDone;
    struct{
         QVariantMap arguments;
@@ -24,19 +25,20 @@ protected:
    } reply;
 
    struct{
+        QString method;
         QVariantMap object;
         QVariantMap arguments;
         QByteArray blob;
    } request;
 
-   QNetworkReply* networkReply;
 
 
    public:
     RpcCommand(const char * method, QObject* parent=0):
         QObject(parent)
     {
-        request.object["method"]=method;
+
+        request.method = method;
         preparationDone=false;
     }
 
@@ -44,11 +46,11 @@ protected:
 
     virtual QByteArray make()=0;
 
-    virtual void handleReply(){}
+    virtual void gotReply()=0;
+    virtual void handleReply()=0;
 
 
     signals:
-    void gotReply();
 
     /**
      * @brief gotTorrentInfo should be emitted whenever data about a torrent becomes available.
@@ -99,29 +101,9 @@ public slots:
 
 void addBasicAuthorisation(QString username, QString password);
 
-virtual void sendCommand(RpcCommand* command){
-        QNetworkRequest request ;
-        request.setUrl(server());
+virtual void sendCommand(RpcCommand* command);
 
-        request.setHeader(QNetworkRequest::ContentTypeHeader, contentType);
-
-
-        for(auto header : headers)
-            request.setRawHeader(header.first, header.second);
-
-        networkManager.post(request,  command->make());
-
-}
-
-virtual void gotReply(QNetworkReply* reply)=0;
-
-void setserver(QUrl arg)
-{
-    if (m_server != arg) {
-        m_server = arg;
-        emit serverChanged(arg);
-    }
-}
+void setserver(QUrl arg);
 
 };
 

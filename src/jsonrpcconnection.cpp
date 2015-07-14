@@ -4,23 +4,15 @@
 JsonRpcConnection::JsonRpcConnection(QUrl server, QObject *parent) :
     RpcConnection(server, parent)
 {
+        connect(
+                    &networkManager, SIGNAL(finished(QNetworkReply*)),
+                    this, SLOT(gotReply(QNetworkReply*))
+                    );
+
     cookieIsSet = false;
     contentType = "application/json";
 }
 
-void JsonRpcConnection::flushBackloggedCommands(){
-    qDebug() << "flushing backlog of " << openCommands.size();
-    if (openCommands.empty()) return;
-
-    int lastTag = openCommands.lastKey();
-    int currentTag=openCommands.firstKey();
-    while(currentTag<=lastTag)
-    {
-        qDebug() << "sending command " << currentTag;
-        sendCommand(openCommands.take(currentTag));
-        currentTag++;
-    }
-}
 
 void JsonRpcConnection::gotReply(QNetworkReply *reply)
 {
@@ -32,40 +24,26 @@ void JsonRpcConnection::gotReply(QNetworkReply *reply)
 
         addHeader("X-Transmission-Session-Id", sessidCookie.toStdString().c_str());
         cookieIsSet=true;
-        flushBackloggedCommands();
+        //send the first backogged command to trigger a 200 status (see below)
+        if(!backLog.empty())
+            sendCommand(backLog.takeFirst());
         return;
     }
     if(reply->error()){
         qWarning() << "got error " << reply->error() << reply->errorString();
         return;
     }
-
-    QByteArray data = reply->readAll();
-    if(data.length()==0){
-        //qWarning() << "received empty";
-        return;
-    }
-
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &error);
-
-    if(error.error != QJsonParseError::NoError)
+    else
     {
-        qWarning() << "parse error" << error.errorString();
-        qWarning() << "at " << error.offset;
-        qWarning() << doc;
-        return;
-    }
-    int tag=doc.object()["tag"].toInt();
-    qDebug() << "got Tag" << tag;
+        qDebug() << "got http status 200 . So Disconnecting onReply";
+        disconnect(&networkManager,SIGNAL(finished(QNetworkReply*)), this, SLOT(gotReply(QNetworkReply*)));
 
-    JsonRpcCommand* command = (JsonRpcCommand*) openCommands.take(tag);
-    if(!command){
-        qWarning() << "received reply to unknown command";
-        qWarning() << doc;
-        return;
+        //now send all those commands that we missed out because of that stupid cookie
+        for(JsonRpcCommand* command: backLog){
+            sendCommand(command);
+        }
+        backLog.clear();
     }
-    command->parseReplyJson(doc);
 
 }
 
@@ -80,6 +58,7 @@ JsonRpcCommand::JsonRpcCommand(const char * method, QObject *parent)
 QByteArray JsonRpcCommand::make()
 {
     request.object.remove("tag");
+    request.object["method"] = request.method;
     request.object.insert("tag", tag());
     request.object["arguments"] = request.arguments;
     request.blob = QJsonDocument::fromVariant(request.object).toJson();
@@ -87,11 +66,24 @@ QByteArray JsonRpcCommand::make()
     return request.blob;
 }
 
-void JsonRpcCommand::parseReplyJson(const QJsonDocument &json ){
-    reply.result   =json.object()["result"].toString();
+void JsonRpcCommand::setTag(int arg)
+{
+    if (m_tag != arg) {
+        m_tag = arg;
+        emit tagChanged(arg);
+        request.object["tag"] = m_tag;
+    }
+}
+
+void JsonRpcCommand::gotReply(){
+    qDebug() << "REPLY";
+    if(networkReply->error())
+        return;
+    QJsonDocument json = QJsonDocument::fromJson(networkReply->readAll());
+
+    reply.result = json.object()["result"].toString();
     //TODO do something with result other than "success"
-    reply.arguments=json.object()["arguments"].toObject().toVariantMap();
+    reply.arguments = json.object()["arguments"].toObject().toVariantMap();
     handleReply();
-    emit gotReply();
     deleteLater();
 }

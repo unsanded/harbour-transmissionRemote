@@ -47,6 +47,32 @@ protected:
 
 public:
 
+    typedef  enum Field {
+        ID,
+        NAME,
+        DOWNLOADDIR,
+        FILES,
+        FILECOUNT,
+        DOWNLOADED,
+        UPLOADED,
+        SIZE,
+        PEERS,
+        PEERSGIVING,
+        PEERSGETTING,
+        SEEDS,
+        ETA,
+        DOWNSPEED,
+        UPSPEED,
+
+        ERROR,
+
+        STATE,
+
+        RATIOLIMIT,
+
+    } Field;
+
+    Q_ENUMS(Field)
 
 
     //propertie getters
@@ -57,7 +83,6 @@ public:
 Q_INVOKABLE virtual QStringList getAllTorrentFields() const = 0;
 
 public:
-
 
     explicit TorrentClient(QString name, QString url, QString username="", QString password="", QObject *parent = 0)
         :QObject(parent)
@@ -157,9 +182,7 @@ virtual bool addSaveLocation(QString location);
  * @param torrents the id's of the torrents to update
  * @param fields the fields to upate
  */
-virtual void updateTorrents(const QVariantList& torrents = QVariantList(), const QStringList &fields = QStringList())=0;
-
-
+virtual void updateTorrents(const QVariantList& torrents = QVariantList(), const QList<Field> &fields = QList<Field>())=0;
 
 
     void setUpSpeed(int arg);

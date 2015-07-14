@@ -15,7 +15,8 @@ TARGET = harbour-transmissionremote
 CONFIG += sailfishapp
 CONFIG += C++11
 
-QT += network
+
+QT += network xml
 
 SOURCES += \
     src/rpcconnection.cpp \
@@ -29,14 +30,14 @@ SOURCES += \
     src/transmissionCommands/torrentget.cpp \
     src/transmissionCommands/uploadtorrent.cpp \
     src/jsonrpcconnection.cpp \
-    src/clienttypes.cpp
+    src/clienttypes.cpp \
+    src/xmlrpcconnection.cpp
 
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
     translations/*.ts \
     qml/pages/TorrentDelegate.qml \
-    qml/pages/SettingsPage.qml \
     qml/pages/TorrentPage.qml \
     qml/pages/TorrentFileDelegate.qml \
     qml/prettyFileSize.js \
@@ -46,12 +47,13 @@ OTHER_FILES += \
     rpm/harbour-transmissionremote.changes.in \
     qml/harbour-transmissionremote.qml \
     qml/dialogs/AddTorrentDialog.qml \
-    qml/dialogs/ClientSettingsDialog.qml
+    qml/dialogs/ClientSettingsDialog.qml \
+    qml/dialogs/SettingsDialog.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line
-CONFIG += sailfishapp_i18n
-TRANSLATIONS += translations/harbour-transmissionremote-de.ts
+#CONFIG += sailfishapp_i18n
+#TRANSLATIONS += translations/harbour-transmissionremote-de.ts
 
 HEADERS += \
     src/rpcconnection.h \
@@ -64,7 +66,8 @@ HEADERS += \
     src/transmissionCommands/torrentget.h \
     src/transmissionCommands/uploadtorrent.h \
     src/jsonrpcconnection.h \
-    src/clienttypes.h
+    src/clienttypes.h \
+    src/xmlrpcconnection.h
 
 RESOURCES +=
 

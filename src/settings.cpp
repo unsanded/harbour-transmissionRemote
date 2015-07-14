@@ -78,15 +78,15 @@ TorrentClient* Settings::getClient(QString name)
 }
 
 TorrentClient*  Settings::addClient(QString type, QString name, QString url, QString username, QString password) {
-   TorrentClient* client = ClientTypes::makeTorrentClient(type, name, url, username, password);
+    TorrentClient* client = ClientTypes::makeTorrentClient(type, name, url, username, password);
 
-   if(client == nullptr)
+    if(client == nullptr)
        return nullptr;
-   m_clients.insert("name", client);
-   emit clientsChanged(clients());
+    m_clients.insert(name, client);
+    emit clientsChanged(clients());
 
 
-    //return client;
+    return client;
 }
 
 

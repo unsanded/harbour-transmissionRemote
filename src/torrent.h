@@ -21,7 +21,16 @@ class Torrent : public QObject
 
     QVariantMap extraData;
 
-    //TODO: figure out best way to represent state
+    enum State{
+        DOWNLOADING,
+        SEEDING,
+        IDLE,
+        CHECKING,
+        MOVING,
+        STALLED
+    };
+
+
 
     QString m_name;
     qreal m_percentage;

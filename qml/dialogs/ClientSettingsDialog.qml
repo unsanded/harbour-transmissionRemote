@@ -8,21 +8,26 @@ Dialog {
     property QtObject client
     property Settings st
 
+    Component.onCompleted: {
+        console.log(client)
+    }
+
     Column{
         DialogHeader{
-            acceptText: "add client"
-            cancelText: "cancel"
+            acceptText: (client==null) ? qsTr("add client"): qsTr("update client")
+            cancelText: qsTr("cancel")
         }
         id: settings
         width: parent.width
         height: parent.height
 
         ComboBox{
-            label: "type"
+            label: qsTr("type")
             id: typeSelect
             width: parent.width
-            visible: (client==null)
+            enabled: (client==null || client == undefined)
             menu: ContextMenu{
+
                 MenuItem{
                     text: "transmission"
                 }
@@ -35,19 +40,22 @@ Dialog {
         TextField {
             id: nameField
             width: parent.width
-            label: "name"
-            placeholderText: "name"
+            label: qsTr( "name")
+            placeholderText: qsTr("name")
+            text:client.name
         }
         TextField {
             id: urlFIeld
             inputMethodHints: Qt.ImhUrlCharactersOnly
             width: parent.width
-            label: "host"
-            text: settings.transmissionHost
+            label: qsTr("host")
+            text: client.url
             Component.onCompleted: {
-                if(text.length < 3)
+                if(text.length < 3){
                     text="http://192.168.1.10:9091/transmission/rpc"
-                select(7,19)
+                    select(15,19)
+                }
+
             }
         }
         TextField{
@@ -55,12 +63,14 @@ Dialog {
             width: parent.width
             label: "username"
             placeholderText: "username"
+            text: client.username
         }
         TextField{
             id: passwordField
             label: "password"
             placeholderText: "password"
             width: parent.width
+            text: client.password
         }
     }
     onAccepted: {

@@ -20,10 +20,10 @@ public:
     JsonRpcCommand(const char* method, QObject* parent=0);
 
     virtual bool operator <(JsonRpcCommand& other){
-        return m_tag < other. m_tag;
+        return m_tag < other.m_tag;
     }
 
-    virtual void parseReplyJson(const QJsonDocument& json );
+    virtual void gotReply();
 
     int tag() const
     {
@@ -34,14 +34,8 @@ public slots:
     virtual QByteArray make();
 
 protected slots:
-    void setTag(int arg)
-    {
-        if (m_tag != arg) {
-            m_tag = arg;
-            emit tagChanged(arg);
-            request.object["tag"] = m_tag;
-        }
-    }
+    void setTag(int arg);
+
 signals:
     void tagChanged(int arg);
 };
@@ -51,40 +45,38 @@ class JsonRpcConnection : public RpcConnection
      Q_OBJECT
 protected:
     bool cookieIsSet ;
+    QList <JsonRpcCommand*> backLog;
 public:
     explicit JsonRpcConnection(QUrl server, QObject *parent = 0);
 
-    QMap<int, RpcCommand*> openCommands;
 signals:
 
 public slots:
 
 
-    void sendCommand(RpcCommand* c){
+
+
+    virtual void sendCommand(RpcCommand* c){
         static int currentTag = 0x42;
 
         JsonRpcCommand* command = (JsonRpcCommand*) c;
         command->setTag(currentTag++);
-        openCommands.insert(command->tag(), command);
 
-        //only allow one pending command until we have a cookie
-        if(!this->cookieIsSet && (openCommands.size()>1))
-        {
-            qDebug() << "skipping " << command->tag() << " because we have no cookie yet";
-            return;
+        //only send stuff if we have a cookie
+        if(!cookieIsSet){
+
+            backLog << command;
+            //send the first command, otherwise we won't get a cookie
+            if(backLog.size() > 1){
+                    return;
+            }
         }
 
         RpcConnection::sendCommand(command);
     }
 
 
-
-
-virtual void gotReply(QNetworkReply *reply);
-
-void flushBackloggedCommands();
-
-
+void gotReply(QNetworkReply *reply);
 };
 
 #endif // JSONRPCCONNECTION_H

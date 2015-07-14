@@ -6,10 +6,6 @@ RpcConnection::RpcConnection(QUrl server, QObject *parent) :
     m_server(server),
     networkManager(this)
 {
-        connect(
-                    &networkManager, SIGNAL(finished(QNetworkReply*)),
-                    this, SLOT(gotReply(QNetworkReply*))
-                    );
         contentType = "text/plain";
 }
 
@@ -20,6 +16,32 @@ void RpcConnection::addBasicAuthorisation(QString username, QString password)
     QByteArray prefix("Basic ");
     addHeader("Authorization", prefix + base64);
 //cGlldHBpcmFhdDpoZXJtYW5oZW5r
+}
+
+void RpcConnection::sendCommand(RpcCommand *command){
+    QNetworkRequest request ;
+    request.setUrl(server());
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, contentType);
+
+
+    for(auto header : headers)
+        request.setRawHeader(header.first, header.second);
+
+    QNetworkReply* reply = networkManager.post(request,  command->make());
+
+    command->networkReply=reply;
+    connect(reply, &QNetworkReply::finished,
+            command, &RpcCommand::gotReply
+    );
+}
+
+void RpcConnection::setserver(QUrl arg)
+{
+    if (m_server != arg) {
+        m_server = arg;
+        emit serverChanged(arg);
+    }
 }
 
 

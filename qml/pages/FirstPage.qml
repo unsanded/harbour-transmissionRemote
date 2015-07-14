@@ -75,7 +75,7 @@ Page {
                 onClicked:{
                     pageStack.push
                    (
-                       Qt.resolvedUrl("SettingsPage.qml"),
+                       Qt.resolvedUrl("../dialogs/SettingsDialog.qml"),
                        {"settings": settings}
                    )
                 }

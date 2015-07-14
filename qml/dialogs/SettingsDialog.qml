@@ -40,16 +40,58 @@ Dialog {
 
     onAccepted: {
         console.log('accepted settings ')
-        settings.setTransmissionHost(hostField.text)
-        settings.setPort(parseInt(portField.text))
     }
 
     Column {
+        id: settingsColumn
         spacing: 10
         width: parent.width
+        height: childrenRect.height
         DialogHeader{
-            acceptText: "Save"
-            cancelText: "Cancel"
+            acceptText: "save"
+            cancelText: "cancel"
+        }
+        Button{
+            anchors.centerIn: parent
+            text:"add client"
+            width: parent.width
+            onClicked: {
+            pageStack.push
+               (Qt.resolvedUrl("ClientSettingsDialog.qml"),
+                   {
+                        "st": st,
+                        "client": null
+                    })
+            }
+        }
+    }
+    ListView{
+        id:clientList
+        model: settings.clients
+        width: parent.width
+        height: contentHeight
+        anchors.top: settingsColumn.bottom
+
+        delegate: Component{
+            BackgroundItem{
+                width: clientList.width
+                height: clientName.height
+                Label{
+                    id: clientName
+                    text: model.name
+                    font.pointSize: 12
+
+                }
+                onClicked: {
+
+                pageStack.push
+                   (Qt.resolvedUrl("ClientSettingsDialog.qml"),
+                       {
+                            "st": settings,
+                            "client": model
+                        })
+                }
+            }
         }
     }
 }

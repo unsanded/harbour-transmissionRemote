@@ -60,10 +60,9 @@ void Torrent::fullUpdate()
 {
     QVariantList list;
     list << id();
-    QStringList fields;// = ((TorrentClient*) parent())->getAllTorrentFields();
-    fields << "files";
-    fields << "wanted";
-    fields << "fileStats";
+    QList<TorrentClient::Field> fields;// = ((TorrentClient*) parent())->getAllTorrentFields();
+    fields.append( TorrentClient::FILES);
+
 
 
     ((TorrentClient*) parent())->updateTorrents(list, fields);

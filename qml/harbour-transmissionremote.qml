@@ -60,7 +60,7 @@ ApplicationWindow
 
         firstClient = st.clients[0];
 
-        firstClient.updateTorrents([], ["downloadDir"]);
+        firstClient.updateTorrents([], [TorrentClient.DOWNLOADDIR]);
         console.log("args",Qt.application.arguments)
 
         if(Qt.application.arguments.length>1){
@@ -69,7 +69,7 @@ ApplicationWindow
                        Qt.resolvedUrl("dialogs/AddTorrentDialog.qml"),
                        {
                             "settings": st,
-                            "client": firstClient,
+                            "client": st.clients[0],
                             "torrentFile": Qt.application.arguments[1]
                         }
                    )

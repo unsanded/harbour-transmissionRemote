@@ -27,14 +27,15 @@ Dialog {
             acceptText: qsTr("add torrent")
         }
         Row{
-            height: autoStartSwitch
+            height: autoStartSwitch.height
             width: parent.width
-            Switch{
+
+            TextSwitch{
                 id: autoStartSwitch
                 checked: true
-            }
-            Label{
-                text: qsTr("start downloading")
+                text:"start"
+                description: "start downloading immediately"
+                width: parent.width
             }
         }
         TextField{

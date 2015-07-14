@@ -26,28 +26,31 @@ bool Transmission::connectToServer()
     if(!username().isEmpty() || !password().isEmpty()){
         connection->addBasicAuthorisation(username(), password());
     }
+    //send some command, just to get a session cookie
+    updateStats();
     return true;
 }
 
 
-void Transmission::updateTorrents(const QVariantList& ids, const QStringList& fields)
+void Transmission::updateTorrents(const QVariantList& ids, const QList<Field>& fields)
 {
 
-    TorrentGet* getCommand= new TorrentGet(ids, fields);
+    QStringList fieldnames;
+
+    for(auto field: fields)
+        fieldnames.append(getFieldName(field));
+
+    TorrentGet* getCommand = new TorrentGet(ids, fieldnames);
     connect(
                 getCommand, SIGNAL(gotTorrentInfo(QVariantMap&)),
                 this, SLOT(onTorrentData(QVariantMap&) )
-                );
-    connect(
-                getCommand, SIGNAL(gotReply()),
-                this      , SLOT(onUpdateDone())
                 );
     connection->sendCommand(getCommand);
 }
 
 void Transmission::updateStats()
 {
-    SessionStats*  command = new SessionStats(this);
+   SessionStats*  command = new SessionStats(this);
     connect(
                 command, SIGNAL(gotUpspeed(int)),
                 this, SLOT(setUpSpeed(int))
