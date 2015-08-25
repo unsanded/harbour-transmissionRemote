@@ -10,8 +10,8 @@ SessionStats::SessionStats(QObject *parent) :
 
 void SessionStats::handleReply()
 {
-    emit gotDownSpeed(reply.arguments["downloadSpeed"].toInt());
-    emit gotUpspeed(reply.arguments["uploadSpeed"].toInt());
+    emit gotDownSpeed(replyArguments["downloadSpeed"].toInt());
+    emit gotUpspeed(replyArguments["uploadSpeed"].toInt());
 }
 
 } // namespace transmissionCommands

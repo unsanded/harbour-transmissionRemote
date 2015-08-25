@@ -48,7 +48,7 @@ ApplicationWindow
 
 
     Component.onCompleted: {
-        if(st.clients.size === 0){
+        if(st.clients.size < 1){
                 pageStack.push
                (
                    Qt.resolvedUrl("dialogs/ClientSettingsDialog.qml"),

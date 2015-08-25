@@ -76,14 +76,13 @@ Dialog {
     onAccepted: {
         if (client == null){
             var type = typeSelect.currentItem.text;
-            client=st.addClient(type, nameField.text, urlFIeld.text, usernameField.text, passwordField.text);
+            client=st.addClient(type, nameField.text, urlFIeld.text, usernameField.text.trim(), passwordField.text.trim());
         }
         else
         {
-            client.name = nameField.text
             client.url  = urlFIeld.text
-            client.username = usernameField.text
-            client.password = passwordField.text
+            client.username = usernameField.text.trim()
+            client.password = passwordField.text.trim()
         }
     }
 }

@@ -41,6 +41,8 @@ void clientsChanged(QQmlListProperty<TorrentClient> arg);
 public:
 Q_INVOKABLE TorrentClient* addClient(QString type, QString name, QString url, QString username, QString password);
 Q_INVOKABLE TorrentClient* getClient(QString name);
+Q_INVOKABLE void removeClient(QString name);
+
 public slots:
 
 void saveClients();

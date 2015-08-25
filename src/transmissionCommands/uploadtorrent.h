@@ -52,7 +52,7 @@ void setAutoStart(bool arg)
 {
     if (m_autoStart != arg) {
         m_autoStart = arg;
-        request.arguments["paused"] = !m_autoStart;
+        requestArguments["paused"] = !m_autoStart;
         emit autoStartChanged(arg);
     }
 }
@@ -60,7 +60,7 @@ void setDownloadDir(QString arg)
 {
     if (m_downloadDir != arg) {
         m_downloadDir = arg;
-        request.arguments["download-dir"] = m_downloadDir;
+        requestArguments["download-dir"] = m_downloadDir;
         emit downloadDirChanged(arg);
     }
 }

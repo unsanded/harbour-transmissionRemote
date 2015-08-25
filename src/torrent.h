@@ -12,7 +12,7 @@
 class Torrent : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int id READ id WRITE setid NOTIFY idChanged)
+    Q_PROPERTY(QString id READ id WRITE setid NOTIFY idChanged)
     Q_PROPERTY(QString name READ name WRITE setname NOTIFY nameChanged)
     Q_PROPERTY(qreal percentage READ percentage WRITE setpercentage NOTIFY percentageChanged)
     Q_PROPERTY(int fileCount READ fileCount WRITE setfileCount NOTIFY fileCountChanged)
@@ -36,7 +36,7 @@ class Torrent : public QObject
     qreal m_percentage;
     int m_fileCount;
 
-    int m_id;
+    QString m_id;
 
     QVariantMap fields;
 
@@ -63,7 +63,7 @@ int fileCount() const
     return m_fileCount;
 }
 
-int id() const
+QString id() const
 {
     return m_id;
 }
@@ -78,7 +78,7 @@ signals:
 void nameChanged(QString arg);
 void percentageChanged(qreal arg);
 void fileCountChanged(int arg);
-void idChanged(int arg);
+void idChanged(QString arg);
 void filesChanged(QQmlListProperty<TorrentFile> arg);
 
 public slots:
@@ -115,7 +115,7 @@ void setfileCount(int arg)
         emit fileCountChanged(arg);
     }
 }
-void setid(int arg)
+void setid(QString arg)
 {
     if (m_id != arg) {
         m_id = arg;

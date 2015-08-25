@@ -23,16 +23,16 @@ class TorrentClient : public QObject
     Q_PROPERTY(QStringList saveLocations READ saveLocations NOTIFY saveLocationsChanged)
     Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
 
-    Q_PROPERTY(QString name READ name)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString type READ clientType)
 
-    Q_PROPERTY(QString username READ username)
-    Q_PROPERTY(QString password READ password)
-    Q_PROPERTY(QString url READ url)
+    Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged)
+    Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
+    Q_PROPERTY(QString url READ url WRITE setUrl NOTIFY urlChanged)
+
 
     //properties
     QString m_name;
-
     QString m_url;
 
 protected:
@@ -45,11 +45,14 @@ protected:
 
     QString m_username, m_password;
 
+    QMap<QString, Torrent*> torrentLookup;
+
 public:
 
     typedef  enum Field {
         ID,
         NAME,
+        HASH,
         DOWNLOADDIR,
         FILES,
         FILECOUNT,
@@ -64,7 +67,7 @@ public:
         DOWNSPEED,
         UPSPEED,
 
-        ERROR,
+        STATUS, //status or error as a string
 
         STATE,
 
@@ -84,7 +87,7 @@ Q_INVOKABLE virtual QStringList getAllTorrentFields() const = 0;
 
 public:
 
-    explicit TorrentClient(QString name, QString url, QString username="", QString password="", QObject *parent = 0)
+    explicit TorrentClient(QString name, QString url="", QString username="", QString password="", QObject *parent = 0)
         :QObject(parent)
     {
 
@@ -100,7 +103,7 @@ public:
         return m_name < other.m_name;
     }
 
-    /**
+/**
  * @brief torrents
  * @return  all the torrents as a QQmlListProperty, so that they are accessable in qml.
  */
@@ -119,8 +122,11 @@ bool connected() const;
      * @param id the unique-per-torrent id of the torrent
      * @return  the torrent or null if no torrent has the id
      */
-    Q_INVOKABLE virtual Torrent* getTorrent(int id) const =0;
 
+    Q_INVOKABLE virtual Torrent* getTorrent(QString id) const
+    {
+        return torrentLookup[id];
+    }
 
 
 QString name() const
@@ -133,6 +139,7 @@ QString name() const
      * @return  a string. for example "transmission"
      */
     virtual const char* clientType()=0;
+
 
 QString password() const
 {
@@ -160,6 +167,12 @@ signals:
 
     void nameChanged(QString arg);
 
+    void usernameChanged(QString arg);
+
+    void passwordChanged(QString arg);
+
+    void urlChanged(QString arg);
+
 public slots:
 
 
@@ -168,6 +181,13 @@ public slots:
      * @return true when the connection succeeds.
      */
     virtual bool connectToServer()=0;
+    virtual void disconnectFromServer()=0;
+
+    /**
+     * @brief onTorrentData process data about torrents
+     * @param data the data to be processed
+     */
+    virtual void onTorrentData(QVariantMap &data) = 0;
 
 
     /**
@@ -195,8 +215,30 @@ virtual void updateTorrents(const QVariantList& torrents = QVariantList(), const
             emit nameChanged(arg);
         }
     }
+
+    void setUsername(QString arg)
+    {
+        if (m_username != arg) {
+            m_username = arg;
+            emit usernameChanged(arg);
+        }
+    }
+    void setPassword(QString arg)
+    {
+        if (m_password != arg) {
+            m_password = arg;
+            emit passwordChanged(arg);
+        }
+    }
+    void setUrl(QString arg)
+    {
+        disconnectFromServer();
+        if (m_url != arg) {
+            m_url = arg;
+            emit urlChanged(arg);
+        }
+        connectToServer();
+    }
 };
-
-
 
 #endif // TORRENTCLIENT_H

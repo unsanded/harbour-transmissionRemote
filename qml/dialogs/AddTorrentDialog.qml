@@ -18,7 +18,6 @@ Dialog {
 
     Column{
         id: settingsColumn
-        VerticalScrollDecorator{}
         width: parent.width
         spacing: 10;
         DialogHeader{

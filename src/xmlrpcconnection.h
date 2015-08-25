@@ -7,13 +7,23 @@
 class XmlRpcCommand : public RpcCommand {
 Q_OBJECT
 
+protected:
+    QVariantList requestArguments;
+
+public:
+    XmlRpcCommand(char *method, QObject *parent=0):
+    RpcCommand(method, parent)
+    {
 
 
-    virtual void gotReply(const QDomDocument&  data);
+    }
+
+
 
     // RpcCommand interface
 public slots:
     virtual QByteArray make();
+    virtual void gotReply();
     virtual void handleReply();
 
 };
@@ -22,7 +32,7 @@ class XmlRpcConnection : public RpcConnection
 {
     Q_OBJECT
 public:
-    explicit XmlRpcConnection(QUrl server, QObject *parent = 0);
+    explicit XmlRpcConnection(QString url, QObject *parent = 0);
 
 
 signals:

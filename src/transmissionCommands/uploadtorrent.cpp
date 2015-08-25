@@ -18,7 +18,7 @@ UploadTorrent::UploadTorrent(QString torrentFile, bool autostart, QString downlo
     if(file.isOpen())
     {
         QByteArray data = file.readAll();
-        request.arguments["metainfo"] = QString(data.toBase64());
+        requestArguments["metainfo"] = QString(data.toBase64());
     }
     else
         qWarning() << "unable to open torrent  file";
@@ -33,13 +33,13 @@ UploadTorrent::UploadTorrent(QString torrentFile, bool autostart, QString downlo
 
 void UploadTorrent::handleReply()
 {
-    if(reply.result=="success"){
+    if(result == "success"){
         qDebug() << "succesfully uploaded torrent";
-        emit gotTorrentInfo(reply.arguments);
+        emit gotTorrentInfo(replyArguments);
     }
     else
-      qWarning() << "torrent Upload failed " << reply.result
-                                     << reply.arguments;
+      qWarning() << "torrent Upload failed " << result
+                                     << replyArguments;
 }
 
 } // namespace transmissionCommands

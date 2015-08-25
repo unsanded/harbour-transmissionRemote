@@ -3,6 +3,7 @@
 
 #include "torrentclient.h"
 #include "jsonrpcconnection.h"
+#include "torrent.h"
 
 
 class Transmission : public TorrentClient
@@ -10,14 +11,12 @@ class Transmission : public TorrentClient
     Q_OBJECT
 
 
-    QMap<int, Torrent*> torrentLookup;
 public:
     explicit Transmission(QString name, QString url, QString username=QString(), QString password=QString(), QObject *parent = 0);
 
 
     RpcConnection* connection;
 
-    Q_INVOKABLE virtual Torrent* getTorrent(int id) const;
 
     Q_INVOKABLE virtual QStringList getAllTorrentFields() const;
 
@@ -72,7 +71,7 @@ public:
         case UPSPEED:
             res << "rateUpload";
             break;
-        case ERROR:
+        case STATUS:
             res << "errorString";
             res << "error";
             break;
@@ -86,24 +85,23 @@ public slots:
 
 
     bool connectToServer();
+    virtual void disconnectFromServer();
 
     void updateStats();
 
     void uploadTorrent(QString filename, bool start=true, QString location="");
 
-    void onTorrentData(QVariantMap &data);
     void onUpdateDone();
 
 
-
     // TorrentClient interface
-public slots:
     virtual void updateTorrents(const QVariantList& torrents = QVariantList(), const QList<Field> &fields = QList<Field>());
+
     virtual const char* clientType(){
         return "transmission";
     }
 
-
+    void onTorrentData(QVariantMap &data);
 };
 
 #endif // TRANSMISSION_H

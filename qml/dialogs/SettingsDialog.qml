@@ -40,13 +40,14 @@ Dialog {
 
     onAccepted: {
         console.log('accepted settings ')
+        settings.saveClients();
     }
 
     Column {
         id: settingsColumn
         spacing: 10
         width: parent.width
-        height: childrenRect.height
+        height: 400
         DialogHeader{
             acceptText: "save"
             cancelText: "cancel"
@@ -79,9 +80,21 @@ Dialog {
                 Label{
                     id: clientName
                     text: model.name
-                    font.pointSize: 12
-
+                    font.pixelSize: Theme.fontSizeMedium
                 }
+                ContextMenu{
+                    MenuItem{
+                        text: "delete";
+                        onClicked: {
+                            deleteRemorse.visible=true
+                            deleteRemorse.execute("deleting connection", function() {settings.removeClient(model.name); } )
+                        }
+                    }
+                }
+                RemorseItem{
+                    id: deleteRemorse;
+                }
+
                 onClicked: {
 
                 pageStack.push

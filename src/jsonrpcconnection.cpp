@@ -57,13 +57,15 @@ JsonRpcCommand::JsonRpcCommand(const char * method, QObject *parent)
 
 QByteArray JsonRpcCommand::make()
 {
-    request.object.remove("tag");
-    request.object["method"] = request.method;
-    request.object.insert("tag", tag());
-    request.object["arguments"] = request.arguments;
-    request.blob = QJsonDocument::fromVariant(request.object).toJson();
-    qDebug() << "sending" << request.object["method"];
-    return request.blob;
+
+    requestObject.remove("tag");
+    requestObject["method"] = method;
+    requestObject.insert("tag", tag());
+    requestObject["arguments"] = requestArguments;
+    requestBlob = QJsonDocument(requestObject).toJson();
+    qDebug() << "sending" << requestObject["method"];
+    return requestBlob;
+
 }
 
 void JsonRpcCommand::setTag(int arg)
@@ -71,7 +73,7 @@ void JsonRpcCommand::setTag(int arg)
     if (m_tag != arg) {
         m_tag = arg;
         emit tagChanged(arg);
-        request.object["tag"] = m_tag;
+        requestObject["tag"] = m_tag;
     }
 }
 
@@ -81,9 +83,9 @@ void JsonRpcCommand::gotReply(){
         return;
     QJsonDocument json = QJsonDocument::fromJson(networkReply->readAll());
 
-    reply.result = json.object()["result"].toString();
+    result = json.object()["result"].toString();
     //TODO do something with result other than "success"
-    reply.arguments = json.object()["arguments"].toObject().toVariantMap();
+    replyArguments = json.object()["arguments"].toObject().toVariantMap();
     handleReply();
     deleteLater();
 }

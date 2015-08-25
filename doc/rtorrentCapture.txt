@@ -1,0 +1,96 @@
+POST /RPC2 HTTP/1.1
+Content-Type: text/xml; charset=UTF-8
+User-Agent: Java/1.8.0_51
+Host: epicurus
+Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+Connection: keep-alive
+Content-Length: 1044
+
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName> d.multicall </methodName>
+    <params>
+    <param>
+        <value> <string> </string> </value>
+    </param>
+    
+    <param>
+    <value> <string>d.get_hash=</string> </value>
+    </param>
+    
+    <param>
+        <value> <string>d.get_name=</string> </value>
+    </param>
+    
+    <param>
+        <value> <string>d.get_state=</string></value>
+    </param>
+    
+    <param>
+        <value> <string>d.get_completed_bytes=</string> </value>
+        
+    </param>
+    <param>
+        <value><string>d.get_up_total=</string></value>
+    </param>
+    
+    <param>
+        <value><string>d.get_peers_complete=</string></value>
+    </param>
+    <param>
+        <value><string>d.get_peers_accounted=</string></value>
+    </param>
+    <param>
+        <value><string>d.get_down_rate=</string></value>
+    </param>
+    <param>
+        <value><string>d.get_up_rate=</string></value>
+    </param>
+    <param>
+        <value> <string>d.get_message=</string> </value>
+    </param>
+    
+    <param>
+        <value> <string>d.get_priority=</string> </value>
+    </param>
+    <param>
+        <value> <string>d.get_size_bytes=</string> </value>
+    </param>
+    <param>
+        <value><string>d.is_hash_checking=</string></value>
+    </param>
+    <param>
+        <value><string>d.get_custom1=</string></value>
+    </param>
+</params>
+</methodCall>
+HTTP/1.1 200 OK
+Date: Fri, 07 Aug 2015 12:12:20 GMT
+Server: Apache/2.2.15 (CentOS)
+Content-Length: 713
+Connection: close
+Content-Type: text/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+<params>
+<param><value><array><data>
+<value><array><data>
+<value><string>7E4BF092FD793A8272443255F42688057FF54AA8</string></value>
+<value><string>2012b - Dodger (Briggs) 64k 10.31.07 {294mb}</string></value>
+<value><i8>1</i8></value>
+<value><i8>309348363</i8></value>
+<value><i8>0</i8></value>
+<value><i8>0</i8></value>
+<value><i8>0</i8></value>
+<value><i8>0</i8></value>
+<value><i8>0</i8></value>
+<value><string></string></value>
+<value><i8>2</i8></value>
+<value><i8>309348363</i8></value>
+<value><i8>0</i8></value>
+<value><string></string></value>
+</data></array></value>
+</data></array></value></param>
+</params>
+</methodResponse>

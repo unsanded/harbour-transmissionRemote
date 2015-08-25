@@ -31,7 +31,10 @@ SOURCES += \
     src/transmissionCommands/uploadtorrent.cpp \
     src/jsonrpcconnection.cpp \
     src/clienttypes.cpp \
-    src/xmlrpcconnection.cpp
+    src/xmlrpcconnection.cpp \
+    src/rtorrent.cpp \
+    src/rtorrentCommands/multicall.cpp \
+    src/rtorrentCommands/updatecommand.cpp
 
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
@@ -48,7 +51,8 @@ OTHER_FILES += \
     qml/harbour-transmissionremote.qml \
     qml/dialogs/AddTorrentDialog.qml \
     qml/dialogs/ClientSettingsDialog.qml \
-    qml/dialogs/SettingsDialog.qml
+    qml/dialogs/SettingsDialog.qml \
+    doc/rtorrentCapture.txt
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -67,7 +71,10 @@ HEADERS += \
     src/transmissionCommands/uploadtorrent.h \
     src/jsonrpcconnection.h \
     src/clienttypes.h \
-    src/xmlrpcconnection.h
+    src/xmlrpcconnection.h \
+    src/rtorrent.h \
+    src/rtorrentCommands/multicall.h \
+    src/rtorrentCommands/updatecommand.h
 
 RESOURCES +=
 

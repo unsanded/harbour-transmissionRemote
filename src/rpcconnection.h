@@ -17,36 +17,32 @@ class RpcCommand: public QObject{
     friend class RpcConnection;
 protected:
 
-    QNetworkReply* networkReply;
-    bool preparationDone;
-   struct{
-        QVariantMap arguments;
-        QString result ; // should contain "success" after response is parsed
-   } reply;
+   QNetworkReply* networkReply;
+   bool preparationDone;
+   QVariantMap replyArguments;
+   QString result ; // should contain "success" after response is parsed
 
-   struct{
-        QString method;
-        QVariantMap object;
-        QVariantMap arguments;
-        QByteArray blob;
-   } request;
+    QString method;
+    QVariantMap object;
+
+    QByteArray requestBlob;
 
 
 
    public:
     RpcCommand(const char * method, QObject* parent=0):
-        QObject(parent)
+        QObject(parent),
+        method(method)
     {
 
-        request.method = method;
         preparationDone=false;
     }
 
     public slots:
 
-    virtual QByteArray make()=0;
+    virtual QByteArray make() =0;
 
-    virtual void gotReply()=0;
+    virtual void gotReply()   =0;
     virtual void handleReply()=0;
 
 

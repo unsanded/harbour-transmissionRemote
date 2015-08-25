@@ -15,6 +15,9 @@ class JsonRpcCommand : public RpcCommand {
 
     int m_tag;
 
+protected:
+    QJsonObject requestArguments;
+    QJsonObject requestObject;
 public:
 
     JsonRpcCommand(const char* method, QObject* parent=0);

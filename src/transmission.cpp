@@ -15,10 +15,7 @@ Transmission::Transmission(QString name, QString url, QString username, QString 
     connectToServer();
 }
 
-Torrent* Transmission::getTorrent(int id) const
-{
-    return torrentLookup[id];
-}
+
 
 bool Transmission::connectToServer()
 {
@@ -29,6 +26,14 @@ bool Transmission::connectToServer()
     //send some command, just to get a session cookie
     updateStats();
     return true;
+}
+
+void Transmission::disconnectFromServer()
+{
+    m_connected = false;
+    emit connectedChanged(false);
+    delete connection;
+    connection = 0;
 }
 
 
@@ -79,7 +84,8 @@ void Transmission::uploadTorrent(QString filename, bool start, QString location)
 
 void Transmission::onTorrentData(QVariantMap& data)
 {
-    int id=data["id"].toInt();
+    QString id=QString("%1").arg(data["id"].toInt(), 3, 10);
+
     Torrent* t= torrentLookup[id];
     if(!t){
         qDebug() << "new torent " <<  id;

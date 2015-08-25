@@ -2,6 +2,7 @@
 
 
 #include "clienttypes.h"
+#include "qdebug.h"
 
 Settings::Settings(QObject *parent) :
     QObject(parent)
@@ -77,6 +78,19 @@ TorrentClient* Settings::getClient(QString name)
 
 }
 
+void Settings::removeClient(QString name)
+{
+    if(!m_clients.contains(name))
+    {
+        qWarning() << "trying to remove non-existant client " << name;
+    }
+    TorrentClient* client = m_clients[name];
+    clientList.removeAll(client);
+    m_clients.remove(name);
+    client->deleteLater();
+
+}
+
 TorrentClient*  Settings::addClient(QString type, QString name, QString url, QString username, QString password) {
     TorrentClient* client = ClientTypes::makeTorrentClient(type, name, url, username, password);
 
@@ -84,8 +98,6 @@ TorrentClient*  Settings::addClient(QString type, QString name, QString url, QSt
        return nullptr;
     m_clients.insert(name, client);
     emit clientsChanged(clients());
-
-
     return client;
 }
 
