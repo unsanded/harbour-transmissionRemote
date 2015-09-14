@@ -58,6 +58,7 @@ ApplicationWindow
                 )
         }
 
+
         firstClient = st.clients[0];
 
         firstClient.updateTorrents([], [TorrentClient.DOWNLOADDIR]);
@@ -80,8 +81,7 @@ ApplicationWindow
     }
 
 
-    initialPage: Component { FirstPage {
-                  client:  firstClient
+    initialPage: Component { SelectClientPage {
                   settings: st
         } }
 

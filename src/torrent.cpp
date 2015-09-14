@@ -22,7 +22,6 @@ Torrent::Torrent(const Torrent &other):
 
 void Torrent::updateFields(QVariantMap &freshData){
 
-
     if(freshData.contains("name"))
         setname(freshData["name"].toString());
     if(freshData.contains("percentDone"))
@@ -40,6 +39,12 @@ void Torrent::updateFields(QVariantMap &freshData){
                     fileList.append(file);
             }
             file->updateData(fileObject);
+        }
+        if(freshData.contains("downSpeed")){
+            setUpSpeed(freshData["upSpeed"].toInt());
+        }
+        if(freshData.contains("downSpeed")){
+            setDownSpeed(freshData["upSpeed"].toInt());
         }
         if(freshData.contains("fileStats")){
             int i=0;

@@ -6,17 +6,14 @@
 
 class XmlRpcCommand : public RpcCommand {
 Q_OBJECT
-
 protected:
     QVariantList requestArguments;
+    QVariantList replyArguments;
 
 public:
-    XmlRpcCommand(char *method, QObject *parent=0):
+    XmlRpcCommand(const char *method, QObject *parent=0):
     RpcCommand(method, parent)
-    {
-
-
-    }
+    { }
 
 
 
@@ -24,7 +21,6 @@ public:
 public slots:
     virtual QByteArray make();
     virtual void gotReply();
-    virtual void handleReply();
 
 };
 

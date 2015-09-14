@@ -1,58 +1,78 @@
 #include "xmlrpcconnection.h"
 
+class DialectCommand : public XmlRpcCommand{
+public:
+    DialectCommand(QObject* parent):
+    XmlRpcCommand("xmlrpc_dialect"){
+        requestArguments.append("i8");
+    }
+    void handleReply(){
+        //deleteLater();
+    }
+};
+
 XmlRpcConnection::XmlRpcConnection(QString url, QObject *parent) :
    RpcConnection(url, parent)
 {
+    contentType="application/xml";
+    //XmlRpcCommand* dialectCommand = new DialectCommand(this);
+
+    //sendCommand(dialectCommand);
 }
 
 
 
-QVariant parseXmlVariant(const QDomElement& element)
+QVariant parseXmlVariant(const QDomNode& e)
 {
-    if(element.isText()){
-        return element.toText().data();
+    if(e.isText()){
+        return e.toText().data();
     }
+    QDomNode element = e.toElement();
+    QString nodename = element.nodeName();
+
     //integer
     if(
-            element.nodeName() == "i4" ||
-            element.nodeName() == "i8" ||
-            element.nodeName() == "int")
+            nodename == "i4" ||
+            nodename == "i8" ||
+            nodename == "int")
         return element.firstChild().toText().data().toLongLong();
 
     //boolean
-    if(element.nodeName() == "boolean")
+    if(nodename == "boolean")
         return element.firstChild().toText().data() == "1";
 
     //string
-    if(element.nodeName() == "string")
+    if(nodename == "string")
         return element.firstChild().toText().data();
 
     //dateTime
-    if(element.nodeName() == "dateTime.iso8601")
+    if(nodename == "dateTime.iso8601")
         return QDateTime::fromString(element.firstChild().toText().data(),"yyyyMMddThh:mm:ss");
 
-    if(element.nodeName() == "base64"){
+    if(nodename == "base64"){
         QString data = element.firstChild().toText().data();
         return QByteArray::fromBase64(data.toStdString().c_str());
     }
-    if (element.nodeName() == "nil")
+    if (nodename == "nil")
         return QVariant();
 
     //next come the big type with n children
-    int childCount =  element.childNodes().count();
 
-    if(element.nodeName() == "array"){
+    if(nodename == "array"){
         QVariantList result;
+        QDomElement data = element.childNodes().at(0).toElement();
+        int childCount = data.childNodes().count();
         for (int i = 0; i< childCount; i++){
-            result << parseXmlVariant(element.childNodes().at(i).toElement());
+            //dont even ask...
+            result << parseXmlVariant(data.childNodes().at(i).toElement().childNodes().at(0));
         }
         return result;
     }
 
 
-    if(element.nodeName() == "struct"){
+    if(nodename == "struct"){
         QVariantMap result;
-
+        int childCount =  element.childNodes().count();
         for (int i = 0; i< childCount; i++){
             QString name = element.childNodes().at(i).namedItem("name").toText().data();
 
@@ -73,36 +93,44 @@ QVariant parseXmlVariant(const QDomElement& element)
 
 void XmlRpcCommand::gotReply()
 {
+    qDebug() << "got reply";
     QDomDocument data("response");
     data.setContent(networkReply->readAll());
-    QDomNode responseData = data.documentElement().elementsByTagName("methodResponse").at(0);
+    QDomElement responseData = data.documentElement().toElement();
+    if(responseData.toElement().tagName()!= "methodResponse")
+        qWarning() << "wrong tag name in response. got" << responseData.tagName() << "instead of 'methodResponse'";
 
-    QDomNode params = responseData.toElement().namedItem("params");
+    QDomNode params = responseData.namedItem("params");
 
     if(params.isNull()){
         QDomNode fault = responseData.namedItem("fault");
         if(fault.isNull()){
             result = "RPC ERROR";
             qWarning() << "There were neither params nor a fault provided in the response to command: " << method;
+            qWarning() << data.toByteArray(2);
             return;
         }
         result = "ERROR";
+
+        qWarning() << "xmlrpc call return an error:" << data.toByteArray(2);
+        qWarning() << "request was" << requestBlob;
+
+        //yes, i know... but struct is a keyword
         QDomElement strukt = fault.toElement().elementsByTagName("struct").at(0).toElement();
-        replyArguments=parseXmlVariant(strukt).toMap();
+        replyArguments << parseXmlVariant(strukt).toMap();
         return;
     }
     result = "succes";
     int paramCount = params.childNodes().size();
-
-
 
     QVariantList paramList = QVariantList();
 
     for(int i = 0; i < paramCount; i++){
         QDomNode paramValue = params.childNodes().at(i).toElement().firstChild();
         if(paramValue.nodeName() != "value") return;//TODO make some nice exception
-        replyArguments[QString("%1").arg(i, 4)] = parseXmlVariant(paramValue.toElement());
+        replyArguments.append(parseXmlVariant(paramValue.toElement().childNodes().at(0)));
     }
+    handleReply();
 }
 
 QDomElement buildDomElement(QVariant input,  QDomDocument& doc){
@@ -185,6 +213,7 @@ QDomElement buildDomElement(QVariant input,  QDomDocument& doc){
 QByteArray XmlRpcCommand::make()
 {
     QDomDocument document;
+    document.appendChild(document.createProcessingInstruction("xml", "version=\"1.0\" encoding='UTF-8'"));
     QDomElement methodCall = document.createElement("methodCall");
     document.appendChild(methodCall);
 
@@ -194,12 +223,13 @@ QByteArray XmlRpcCommand::make()
     QDomElement params = document.createElement("params");
     for (QVariant iter : requestArguments){
         QDomElement param = document.createElement("param");
-        param.appendChild(buildDomElement(iter, document));
+        QDomElement value = document.createElement("value");
+        param.appendChild(value);
+        value.appendChild(buildDomElement(iter, document));
         params.appendChild(param);
     }
-    return requestBlob;
-}
+    methodCall.appendChild(params);
 
-void XmlRpcCommand::handleReply()
-{
+    requestBlob = document.toByteArray();
+    return requestBlob;
 }

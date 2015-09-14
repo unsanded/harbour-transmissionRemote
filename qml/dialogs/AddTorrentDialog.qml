@@ -3,13 +3,16 @@ import Sailfish.Silica 1.0
 import harbour.transmissionremote 1.0
 
 Dialog {
-    property QtObject client
+    id: root
+    property Settings settings
     property alias location: locationInput.text
-
+    property QtObject client
     property string torrentFile
+
 
     onAccepted: {
         console.log("uploading torrent ", torrentFile)
+        client = settings.getClient(clientName)
         client.uploadTorrent(torrentFile, autoStartSwitch.checked, locationInput.text);
     }
     Component.onCompleted: {
@@ -19,23 +22,35 @@ Dialog {
     Column{
         id: settingsColumn
         width: parent.width
-        spacing: 10;
+        spacing: 10
         DialogHeader{
             id: header
             cancelText: qsTr("cancel")
             acceptText: qsTr("add torrent")
         }
-        Row{
-            height: autoStartSwitch.height
+        ComboBox{
+            id:clientSelect
             width: parent.width
-
-            TextSwitch{
-                id: autoStartSwitch
-                checked: true
-                text:"start"
-                description: "start downloading immediately"
-                width: parent.width
+            menu: ContextMenu{
+                Repeater{
+                    model: settings.clients
+                    MenuItem{
+                        property QtObject client : modelData
+                        text: client.name
+                        onClicked: {
+                            root.client = this.client
+                        }
+                    }
+                }
             }
+        }
+
+        TextSwitch{
+            id: autoStartSwitch
+            checked: true
+            text:"start"
+            description: "start downloading immediately"
+            width: parent.width
         }
         TextField{
             id: locationInput
@@ -45,8 +60,10 @@ Dialog {
         }
     }
     ListView{
-        width: parent.width
+        id: locationSuggestionList
         model: client.saveLocations
+
+        width: parent.width
         height: contentHeight
         anchors.top: settingsColumn.bottom
 
@@ -61,6 +78,7 @@ Dialog {
                 width: parent.width
                 anchors.verticalCenter: parent.verticalCenter
                 elide: Text.ElideMiddle
+                font.pointSize: 16
             }
         }
     }

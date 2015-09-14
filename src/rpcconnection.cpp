@@ -15,7 +15,6 @@ void RpcConnection::addBasicAuthorisation(QString username, QString password)
     QByteArray base64 = key.toBase64();
     QByteArray prefix("Basic ");
     addHeader("Authorization", prefix + base64);
-//cGlldHBpcmFhdDpoZXJtYW5oZW5r
 }
 
 void RpcConnection::sendCommand(RpcCommand *command){

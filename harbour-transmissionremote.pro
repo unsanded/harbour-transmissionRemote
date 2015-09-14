@@ -34,7 +34,9 @@ SOURCES += \
     src/xmlrpcconnection.cpp \
     src/rtorrent.cpp \
     src/rtorrentCommands/multicall.cpp \
-    src/rtorrentCommands/updatecommand.cpp
+    src/rtorrentCommands/updatecommand.cpp \
+    src/rtorrenttorrent.cpp \
+    src/rtorrentCommands/addtorrent.cpp
 
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
@@ -52,7 +54,8 @@ OTHER_FILES += \
     qml/dialogs/AddTorrentDialog.qml \
     qml/dialogs/ClientSettingsDialog.qml \
     qml/dialogs/SettingsDialog.qml \
-    doc/rtorrentCapture.txt
+    doc/rtorrentCapture.txt \
+    qml/pages/SelectClientPage.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -74,7 +77,9 @@ HEADERS += \
     src/xmlrpcconnection.h \
     src/rtorrent.h \
     src/rtorrentCommands/multicall.h \
-    src/rtorrentCommands/updatecommand.h
+    src/rtorrentCommands/updatecommand.h \
+    src/rtorrenttorrent.h \
+    src/rtorrentCommands/addtorrent.h
 
 RESOURCES +=
 

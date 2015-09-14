@@ -18,9 +18,15 @@ public:
     }
 
     inline void addField(QString field){
+        if(fields.contains(field)) return;
         MultiCall::addMethod(QString("d.get_%1").arg(field));
-
+        fields.append(field);
     }
+
+    virtual void handleReply();
+
+protected:
+    QStringList fields;
 
 signals:
 

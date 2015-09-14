@@ -18,15 +18,42 @@ void RTorrent::disconnectFromServer()
 void RTorrent::updateTorrents(const QVariantList& torrents, const QList<Field> &fields )
 {
     UpdateCommand* command = new UpdateCommand(this);
+    if(fields.empty()){
+        QList<Field> defaultFields;
+        defaultFields << HASH  << NAME <<  DOWNSPEED << UPSPEED << DOWNLOADED ;
 
+        for(auto field : defaultFields){
+            command->addField(getFieldName(field));
+        }
+    }
+    else
     for(auto field : fields){
         command->addField(getFieldName(field));
     }
+    connect(
+        command, &RpcCommand::gotTorrentInfo,
+        this,    &RTorrent::onTorrentData
+       );
 
+    //delete, as soon as we got it's data
+    connect(
+            command, &RpcCommand::gotTorrentInfo,
+            command, &QObject::deleteLater
+           );
+
+    connection.sendCommand(command);
 }
 
 void RTorrent::onTorrentData(QVariantMap &data){
-    Torrent* t = getTorrent(data["hash"].toString());
+    QString hash = data["hash"].toString();
+    Torrent* t = getTorrent(hash);
+    if(t == nullptr){
+        qDebug() << "new Torrent";
+        t  = new Torrent(this);
+        t->setid(hash);
+        torrentLookup.insert(hash, t);
+        torrentList.append(t);
+    }
     t->updateFields(data);
 }
 
@@ -42,7 +69,7 @@ QStringList RTorrent::getFieldName(TorrentClient::Field field)
         result << "name";
         break;
     case STATE:
-        result << "state";
+        result << "state" << "is_hash_checking";
         break;
     case UPSPEED:
         result << "up_rate";
@@ -50,7 +77,24 @@ QStringList RTorrent::getFieldName(TorrentClient::Field field)
     case DOWNSPEED:
         result << "down_rate";
         break;
-
+    case STATUS:
+        result << "message";
+        break;
+    case SIZE:
+        result << "size_bytes";
+        break;
+    case DOWNLOADED:
+        result << "completed_bytes";
+        break;
+    case UPLOADED:
+        result << "up_total";
+        break;
+    case SEEDS:
+        result << "peers_completed";
+        break;
+    case PEERS:
+        result << "peers_accounted";
+        break;
     }
     return result;
 }

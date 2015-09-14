@@ -1,14 +1,26 @@
 .pragma library
 
 function prettyFileSize(bytes) {
+    var number;
+    var suffix;
     if(bytes>  Math.pow(2,30)){
-        return (bytes/ Math.pow(2,30)) + "GiB";
+        number = (bytes/ Math.pow(2,30));
+        suffix = "GiB";
     }
+    else
     if(bytes>  Math.pow(2,20)){
-        return (bytes/ Math.pow(2,20)) + "MiB";
+        number = (bytes/ Math.pow(2,20)) ;
+        suffix = "MiB";
     }
+    else
     if(bytes>  Math.pow(2,10)){
-        return (bytes/ Math.pow(2,10)) + "KiB";
+        number = (bytes/ Math.pow(2,10))
+        suffix = "KiB";
     }
-    return bytes + "B"
+    else
+    {
+        number = bytes
+        suffix = "B"
+    }
+    return ("" + number).substr(0,3) + suffix;
 }

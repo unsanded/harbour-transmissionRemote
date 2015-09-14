@@ -37,6 +37,7 @@ public:
 public slots:
     virtual bool connectToServer()
     {
+        return true;
     }
     virtual void disconnectFromServer();
 

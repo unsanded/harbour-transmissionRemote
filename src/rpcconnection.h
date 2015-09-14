@@ -19,7 +19,7 @@ protected:
 
    QNetworkReply* networkReply;
    bool preparationDone;
-   QVariantMap replyArguments;
+
    QString result ; // should contain "success" after response is parsed
 
     QString method;

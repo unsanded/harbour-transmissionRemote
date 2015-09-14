@@ -17,6 +17,7 @@ class JsonRpcCommand : public RpcCommand {
 
 protected:
     QJsonObject requestArguments;
+    QVariantMap replyArguments;
     QJsonObject requestObject;
 public:
 

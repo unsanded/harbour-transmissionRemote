@@ -43,6 +43,9 @@ Dialog {
             label: qsTr( "name")
             placeholderText: qsTr("name")
             text:client.name
+            validator: RegExpValidator{
+                regExp: /.+/
+            }
         }
         TextField {
             id: urlFIeld
@@ -60,6 +63,7 @@ Dialog {
         }
         TextField{
             id: usernameField
+            inputMethodHints: Qt.ImhNoAutoUppercase + Qt.ImhNoPredictiveText
             width: parent.width
             label: "username"
             placeholderText: "username"
@@ -67,6 +71,7 @@ Dialog {
         }
         TextField{
             id: passwordField
+            inputMethodHints: Qt.ImhNoAutoUppercase + Qt.ImhNoPredictiveText
             label: "password"
             placeholderText: "password"
             width: parent.width

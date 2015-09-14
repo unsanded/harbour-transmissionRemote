@@ -4,8 +4,10 @@ namespace rtorrentCommands{
 
 
 MultiCall::MultiCall(RTorrent *parent) :
-    XmlRpcCommand("MultiCall", parent)
+    XmlRpcCommand("d.multicall", parent)
 {
+
+    requestArguments.append("");
 
 }
 
