@@ -1,18 +1,31 @@
-#include "rtorrenttorrent.h"
+#include "transmissiontorrent.h"
+#include "transmissionCommands/movetorrent.h"
 
-RTorrentTorrent::RTorrentTorrent(RTorrent *parent) :
+
+TransmissionTorrent::TransmissionTorrent(Transmission *parent) :
     Torrent(parent)
 {
 }
 
-void RTorrentTorrent::updateFields(QVariantMap &freshData)
+void TransmissionTorrent::moveData(QString destination)
 {
+    transmissionCommands::moveTorrent* command = new transmissionCommands::moveTorrent(this, destination);
+    ((Transmission*)parent())->connection->sendCommand(command);
+
+    connect(
+                command, SIGNAL(done()),
+                command, SLOT(deleteLater())
+            );
+}
+
+
+
+void TransmissionTorrent::updateFields(QVariantMap &freshData){
+
     if(freshData.contains("name"))
         setname(freshData["name"].toString());
-
-    if(freshData.contains("completed_bytes")){
-        setpercentage(freshData["compleded_bytes"].toDouble()/((double) totalSize()) * 100.0);
-    }
+    if(freshData.contains("percentDone"))
+        setpercentage(freshData["percentDone"].toDouble() * 100.0);
 
     if(freshData.contains("downSpeed")){
         setUpSpeed(freshData["upSpeed"].toInt());
@@ -20,14 +33,17 @@ void RTorrentTorrent::updateFields(QVariantMap &freshData)
     if(freshData.contains("downSpeed")){
         setDownSpeed(freshData["upSpeed"].toInt());
     }
-    if(freshData.contains("")){
+    if(freshData.contains("downloadDir")){
+        setDownloadDir(freshData["downloadDir"].toString());
+    }
+    if(freshData.contains("files")){
         for(auto iter : freshData["files"].toList()){
             QVariantMap fileObject=iter.toMap();
 
             QString filename  = fileObject["name"].toString() ;
             TorrentFile* file = fileLookup[filename];
             if(!file){
-                file = addFile(filename);
+                    file = addFile(filename);
             }
             file->updateData(fileObject);
         }
@@ -45,4 +61,3 @@ void RTorrentTorrent::updateFields(QVariantMap &freshData)
         emit filesChanged(files());
     }
 }
-

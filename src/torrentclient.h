@@ -35,17 +35,19 @@ class TorrentClient : public QObject
     QString m_name;
     QString m_url;
 
-protected:
+
+private:
     QList<Torrent*> torrentList;
     int m_upSpeed;
     int m_downSpeed;
     QSet<QString> m_saveLocations;
     QUrl m_server;
-    bool m_connected;
-
     QString m_username, m_password;
 
     QMap<QString, Torrent*> torrentLookup;
+
+protected:
+    bool m_connected;
 
 public:
 
@@ -83,7 +85,7 @@ public:
     int downSpeed() const;
     const QStringList saveLocations() const;
 
-Q_INVOKABLE virtual QStringList getAllTorrentFields() const = 0;
+Q_INVOKABLE virtual QList<Field> getAllTorrentFields() const = 0;
 
 public:
 
@@ -103,6 +105,7 @@ public:
         return m_name < other.m_name;
     }
 
+
 /**
  * @brief torrents
  * @return  all the torrents as a QQmlListProperty, so that they are accessable in qml.
@@ -116,6 +119,11 @@ QQmlListProperty<Torrent> torrents();
  */
 bool connected() const;
 
+
+void addTorrent(Torrent* torrent, QString id){
+    torrentLookup.insert(id, torrent);
+    torrentList.append(torrent);
+}
 
 /**
      * @brief getTorrent gets the torrent identified by an id
@@ -203,7 +211,16 @@ virtual bool addSaveLocation(QString location);
  * @param fields the fields to upate
  */
 virtual void updateTorrents(const QVariantList& torrents = QVariantList(), const QList<Field> &fields = QList<Field>())=0;
+virtual void updateStats()=0;
 
+    /**
+ * @brief uploadTorrent should upload a local torrent file to the server for downloading
+ * @param torrentFile the path to the torrent file on the local system
+ * @param autoStart start downloading immediately
+ * @param saveLocation the location on the server to save the data
+ * Note: saveLocation is not supported by rtorrent
+ */
+virtual void uploadTorrent(const QString& torrentFile, bool autoStart=true, QString saveLocation = "") = 0;
 
     void setUpSpeed(int arg);
 

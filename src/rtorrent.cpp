@@ -1,6 +1,8 @@
 #include "rtorrent.h"
 #include "torrent.h"
+#include "rtorrenttorrent.h"
 #include "rtorrentCommands/updatecommand.h"
+#include "rtorrentCommands/addtorrent.h"
 
 using namespace rtorrentCommands;
 
@@ -9,6 +11,19 @@ RTorrent::RTorrent(QString name, QString url, QString username, QString password
     connection(url, this)
 {
     
+}
+
+void RTorrent::uploadTorrent(const QString &filename, bool autostart, QString downloadDir){
+
+    auto command = new addTorrentCommand (filename, downloadDir);
+    command->setAutoStart(autostart);
+
+    connect(command, &RpcCommand::done,
+            command, &QObject::deleteLater);
+
+    connection.sendCommand(command);
+
+
 }
 
 void RTorrent::disconnectFromServer()
@@ -20,7 +35,7 @@ void RTorrent::updateTorrents(const QVariantList& torrents, const QList<Field> &
     UpdateCommand* command = new UpdateCommand(this);
     if(fields.empty()){
         QList<Field> defaultFields;
-        defaultFields << HASH  << NAME <<  DOWNSPEED << UPSPEED << DOWNLOADED ;
+        defaultFields << HASH  << NAME <<  DOWNSPEED << UPSPEED << DOWNLOADED << DOWNLOADDIR;
 
         for(auto field : defaultFields){
             command->addField(getFieldName(field));
@@ -49,10 +64,8 @@ void RTorrent::onTorrentData(QVariantMap &data){
     Torrent* t = getTorrent(hash);
     if(t == nullptr){
         qDebug() << "new Torrent";
-        t  = new Torrent(this);
-        t->setid(hash);
-        torrentLookup.insert(hash, t);
-        torrentList.append(t);
+        t  = new RTorrentTorrent(this);
+        addTorrent(t, hash);
     }
     t->updateFields(data);
 }
@@ -61,6 +74,8 @@ QStringList RTorrent::getFieldName(TorrentClient::Field field)
 {
     QStringList result;
     switch(field){
+    default:
+        result << "name";
     case ID:
     case HASH:
         result << "hash";
@@ -94,6 +109,9 @@ QStringList RTorrent::getFieldName(TorrentClient::Field field)
         break;
     case PEERS:
         result << "peers_accounted";
+        break;
+    case DOWNLOADDIR:
+        result << "directory_base";
         break;
     }
     return result;

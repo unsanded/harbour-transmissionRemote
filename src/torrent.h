@@ -18,6 +18,8 @@ class Torrent : public QObject
     Q_PROPERTY(int fileCount READ fileCount WRITE setfileCount NOTIFY fileCountChanged)
     Q_PROPERTY(int upSpeed READ upSpeed WRITE setUpSpeed NOTIFY upSpeedChanged)
     Q_PROPERTY(int downSpeed READ downSpeed WRITE setDownSpeed NOTIFY downSpeedChanged)
+    Q_PROPERTY(int totalSize READ totalSize WRITE setTotalSize NOTIFY totalSizeChanged)
+    Q_PROPERTY(QString downloadDir READ downloadDir WRITE setDownloadDir NOTIFY downloadDirChanged)
 
     Q_PROPERTY(QQmlListProperty<TorrentFile> files READ files NOTIFY filesChanged)
 
@@ -42,51 +44,46 @@ class Torrent : public QObject
 
     QVariantMap fields;
 
+protected:
     QList<TorrentFile*> fileList;
     QMap<QString, TorrentFile*> fileLookup;
 
+private:
     int m_upSpeed;
-
     int m_downSpeed;
+    int m_totalSize;
+
+    QString m_downloadDir;
 
 public:
     explicit Torrent( TorrentClient *parent=0);
     explicit Torrent( const Torrent& other );
 
+protected:
+    /**
+     * for internal use only. Adds a file to the list of files
+     */
+    TorrentFile* addFile(QString filename);
 
-QString name() const
-{
-    return m_name;
-}
+public:
 
-qreal percentage() const
-{
-    return m_percentage;
-}
-
-int fileCount() const
-{
-    return m_fileCount;
-}
-
-QString id() const
-{
-    return m_id;
-}
+QString name() const;
+qreal percentage() const;
+int fileCount() const;
+QString id() const;
+int upSpeed() const;
+int downSpeed() const;
+int totalSize() const;
 
 QQmlListProperty<TorrentFile> files()
 {
     return QQmlListProperty<TorrentFile>( (QObject*) this, fileList);
 }
 
-int upSpeed() const
-{
-    return m_upSpeed;
-}
 
-int downSpeed() const
+QString downloadDir() const
 {
-    return m_downSpeed;
+    return m_downloadDir;
 }
 
 signals:
@@ -101,14 +98,20 @@ void upSpeedChanged(int arg);
 
 void downSpeedChanged(int arg);
 
+void totalSizeChanged(int arg);
+
+void downloadDirChanged(QString arg);
+
 public slots:
 
 /**
  * @brief updateFields updates the torrent data with the data in freshData
- * @param freshData JsonObject describing a torrent.
+ * @param freshData VariantMap which maps field names to torrentData.
+ * The fieldnames depend on which client is used. So to add a new client one needs so subclass torrent as wel
  */
-virtual void updateFields(QVariantMap& freshData);
+virtual void updateFields(QVariantMap& /*freshData*/){};
 
+virtual void moveData(QString /*destination*/){};
 
 void fullUpdate();
 
@@ -156,6 +159,22 @@ void setDownSpeed(int arg)
         emit downSpeedChanged(arg);
     }
 }
+void setTotalSize(int arg)
+{
+    if (m_totalSize != arg) {
+        m_totalSize = arg;
+        emit totalSizeChanged(arg);
+    }
+}
+void setDownloadDir(QString arg)
+{
+    if (m_downloadDir != arg) {
+        m_downloadDir = arg;
+        emit downloadDirChanged(arg);
+    }
+}
 };
+
+
 
 #endif // TORRENT_H

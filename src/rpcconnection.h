@@ -54,6 +54,11 @@ protected:
      * @param fields A QVariantMap containing at least the *id* filed.
      */
     void gotTorrentInfo(QVariantMap& fields);
+    /**
+     * @brief done should be emitted when the command has fulfilled it's purpose.
+     * Usualy this means that it can be delete. eg. by connecting this signal to `deleteLater()`.
+     */
+    void done();
 
 };
 

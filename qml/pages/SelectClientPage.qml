@@ -8,11 +8,29 @@ Page {
 
     property Settings settings
 
+    Timer{
+        repeat: true;
+        interval: 1000
+        running: autoUpdateSwitch.checked
+        onTriggered: {
+            for (var c in settings.clients)
+                settings.clients[c].updateStats();
+        }
+    }
+
     SilicaListView{
         id: clientList
         model: settings.clients
         anchors.fill: parent
         PullDownMenu {
+            TextSwitch{
+                id:autoUpdateSwitch
+                text: qsTr("auto update");
+                onCheckedChanged: {
+                    settings.autoUpdateInClientSelect = checked
+                }
+            }
+
             MenuItem {
                 text: qsTr("settings")
                 onClicked:{
@@ -26,8 +44,9 @@ Page {
             MenuItem {
                 text: qsTr("refresh")
                 onClicked: {
-                    for (client in settings.clients)
-                            client.updateStats();
+                    for (var c in settings.clients){
+                        settings.clients[c].updateStats();
+                    }
                 }
             }//MenuItem
         }//pulldownmenu

@@ -11,8 +11,11 @@ class addTorrentCommand : public XmlRpcCommand
     bool m_autoStart;
 
 public:
-explicit addTorrentCommand(QObject *parent = 0);
+explicit addTorrentCommand(QString filename, QString downloadDir, QObject *parent = 0);
+
 bool autoStart() const;
+
+virtual void handleReply(){}
 
 signals:
 
@@ -21,6 +24,7 @@ void autoStartChanged(bool arg);
 public slots:
 
 void setAutoStart(bool arg);
+
 };
 
 } // namespace rtorrentCommands

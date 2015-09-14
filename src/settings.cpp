@@ -70,6 +70,15 @@ void Settings::loadClients()
 
 }
 
+void Settings::saveSettings()
+{
+    settings.beginGroup("general");
+    settings.setValue("autoUpdateInClientSelect", autoUpdateInClientSelect());
+    saveClients();
+
+
+}
+
 TorrentClient* Settings::getClient(QString name)
 {
     if(m_clients.contains(name))

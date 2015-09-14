@@ -15,10 +15,9 @@ public:
     explicit Transmission(QString name, QString url, QString username=QString(), QString password=QString(), QObject *parent = 0);
 
 
-    RpcConnection* connection;
 
 
-    Q_INVOKABLE virtual QStringList getAllTorrentFields() const;
+    Q_INVOKABLE virtual QList<Field> getAllTorrentFields() const;
 
 
     static QStringList getFieldName(Field field){
@@ -89,7 +88,7 @@ public slots:
 
     void updateStats();
 
-    void uploadTorrent(QString filename, bool start=true, QString location="");
+    virtual void uploadTorrent(const QString& filename, bool start=true, QString location="");
 
     void onUpdateDone();
 
@@ -102,6 +101,12 @@ public slots:
     }
 
     void onTorrentData(QVariantMap &data);
+
+    friend class TransmissionTorrent;
+
+protected:
+
+    RpcConnection* connection;
 };
 
 #endif // TRANSMISSION_H

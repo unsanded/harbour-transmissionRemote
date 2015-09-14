@@ -13,6 +13,7 @@ Dialog {
     }
 
     Column{
+        VerticalScrollDecorator{}
         DialogHeader{
             acceptText: (client==null) ? qsTr("add client"): qsTr("update client")
             cancelText: qsTr("cancel")
@@ -35,6 +36,19 @@ Dialog {
                     text: "rtorrent"
                 }
             }
+            onValueChanged: {
+                if(urlFIeld.isDefault){
+                    if(currentItem.text == "rtorrent"){
+                        urlFIeld.text="http://192.168.1.10/RPC2";
+                        urlFIeld.isDefault = true
+                    }
+                    else
+                    if(currentItem.text == "transmission"){
+                        urlFIeld.text="http://192.168.1.10:9091/transmission/rpc";
+                        urlFIeld.isDefault = true
+                    }
+                }
+            }
         }
 
         TextField {
@@ -53,12 +67,15 @@ Dialog {
             width: parent.width
             label: qsTr("host")
             text: client.url
+            property bool isDefault : true
             Component.onCompleted: {
                 if(text.length < 3){
                     text="http://192.168.1.10:9091/transmission/rpc"
-                    select(15,19)
+                    isDefault=true
                 }
-
+            }
+            onTextChanged: {
+                isDefault = false
             }
         }
         TextField{

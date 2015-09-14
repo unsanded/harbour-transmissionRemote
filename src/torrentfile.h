@@ -32,7 +32,7 @@ class TorrentFile : public QObject
 protected:
     explicit TorrentFile(QObject *parent = 0);
     explicit TorrentFile(const QVariantMap &doc, QObject *parent = 0);
-protected slots:
+public slots:
     void     updateData(const QVariantMap  &data);
 public:
 
@@ -71,57 +71,22 @@ public:
 
 signals:
 
+    //properties
     void fileNameChanged(QString arg);
-
     void priorityChanged(int arg);
-
     void wantedChanged(bool arg);
-
     void haveBytesChanged(long arg);
-
     void completedBytesChanged(long arg);
-
     void percentageChanged(double arg);
 
 public slots:
 
-    void setFileName(QString arg)
-{
-    if (m_fileName != arg) {
-        m_fileName = arg;
-        emit fileNameChanged(arg);
-    }
-}
-    void setPriority(int arg)
-{
-    if (m_priority != arg) {
-        m_priority = arg;
-        emit priorityChanged(arg);
-    }
-    }
-    void setWanted(bool arg)
-    {
-        if (m_wanted != arg) {
-            m_wanted = arg;
-            emit wantedChanged(arg);
-        }
-    }
-    void setHaveBytes(long arg)
-    {
-        if (m_haveBytes != arg) {
-            m_haveBytes = arg;
-            emit haveBytesChanged(arg);
-            emit percentageChanged(percentage());
-        }
-    }
-    void setCompletedBytes(long arg)
-    {
-        if (m_completedBytes != arg) {
-            m_completedBytes = arg;
-            emit completedBytesChanged(arg);
-            emit percentageChanged(percentage());
-        }
-    }
+    //properties
+    void setFileName(QString arg);
+    void setPriority(int arg);
+    void setWanted(bool arg);
+    void setHaveBytes(long arg);
+    void setCompletedBytes(long arg);
 };
 
 #endif // TORRENTFILE_H

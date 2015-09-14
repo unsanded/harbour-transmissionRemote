@@ -87,5 +87,5 @@ void JsonRpcCommand::gotReply(){
     //TODO do something with result other than "success"
     replyArguments = json.object()["arguments"].toObject().toVariantMap();
     handleReply();
-    deleteLater();
+    emit done();
 }

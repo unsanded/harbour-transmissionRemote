@@ -6,6 +6,7 @@ Item {
     id: root
     property ListView listView: ListView.view
     property QtObject client
+    property Torrent torrent: modelData
 
     signal onClicked
     width: listView.width
@@ -17,7 +18,11 @@ Item {
         onClicked:     {
                           pageStack.push(
                            Qt.resolvedUrl("TorrentPage.qml"),
-                           {"torrent": client.getTorrent(model.id)}
+                           {
+
+                                  "torrent": torrent,
+                                  "client": client
+                              }
                           )
                         }
 

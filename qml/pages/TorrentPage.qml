@@ -7,9 +7,18 @@ import harbour.transmissionremote 1.0
 Page {
     id: page
     property Torrent torrent
+    property QtObject client
 
     Component.onCompleted: {
         torrent.fullUpdate()
+    }
+    Timer{
+        repeat: true
+        interval: 1000
+        running: autoUpdateSwitch.checked
+        onTriggered: {
+            torrent.fullUpdate();
+        }
     }
 
     SilicaListView{
@@ -23,6 +32,23 @@ Page {
         VerticalScrollDecorator{}
 
         PullDownMenu{
+            TextSwitch{
+                id: autoUpdateSwitch
+            }
+            MenuItem{
+                text: "move data"
+                onClicked: {
+                    pageStack.push
+                   (
+                       Qt.resolvedUrl("../dialogs/MoveTorrentDialog.qml"),
+                       {
+                                    "torrent": torrent,
+                                    "client": client
+                                }
+                   )
+                }
+            }
+
             MenuItem{
                 text:qsTr("refresh")
                 onClicked: {

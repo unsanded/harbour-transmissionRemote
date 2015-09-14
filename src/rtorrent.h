@@ -19,15 +19,24 @@ public slots:
 
     // TorrentClient interface
 public:
-    virtual QStringList getAllTorrentFields() const
+    virtual QList<Field> getAllTorrentFields() const
     {
-        return QStringList();
+        QList<Field> result;
+
+        result << HASH;
+        result << FILES;
+        result << NAME;
+        result << UPLOADED;
+        result << DOWNSPEED;
+        result << UPSPEED;
+        result << DOWNLOADDIR;
+        result << DOWNLOADED;
+        result << FILES;
+
+
+        return result;
     }
 
-    virtual Torrent *getTorrent(QString id) const
-    {
-        return torrentLookup[id];
-    }
     virtual const char *clientType()
     {
         return "rtorrent";
@@ -35,6 +44,8 @@ public:
 
 
 public slots:
+    virtual void uploadTorrent(const QString& filename, bool autostart=true, QString downloadDir="");
+
     virtual bool connectToServer()
     {
         return true;
@@ -47,6 +58,13 @@ public slots:
 
 protected:
     static QStringList getFieldName(Field field);
+
+    // TorrentClient interface
+public slots:
+    virtual void updateStats()
+    {
+        //TODO
+    }
 };
 
 #endif // RTORRENT_H

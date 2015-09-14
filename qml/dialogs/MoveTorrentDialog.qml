@@ -4,54 +4,31 @@ import harbour.transmissionremote 1.0
 
 Dialog {
     id: root
-    property Settings settings
     property alias location: locationInput.text
-    property QtObject client
-    property string torrentFile
+    property Torrent torrent;
+    property QtObject client;
 
 
     onAccepted: {
-        console.log("uploading torrent ", torrentFile)
-        client.uploadTorrent(torrentFile, autoStartSwitch.checked, locationInput.text);
+        torrent.moveData(location);
     }
     Component.onCompleted: {
-        client.updateTorrents([], []);
-        client =  clientSelect.currentItem.client
     }
 
     Column{
         id: settingsColumn
         width: parent.width
         spacing: 10
+
         DialogHeader{
             id: header
             cancelText: qsTr("cancel")
-            acceptText: qsTr("add torrent")
+            acceptText: qsTr("move data")
         }
-        ComboBox{
-            id:clientSelect
+        Label{
             width: parent.width
-            menu: ContextMenu{
-                Repeater{
-                    model: settings.clients
-                    MenuItem{
-                        property QtObject client : modelData
-                        text: client.name
-                        onClicked: {
-                            root.client = this.client
-                            this.client.update()
-                        }
-                    }
-                }
-            }
-        }
-
-        TextSwitch{
-            id: autoStartSwitch
-            checked: true
-            text:"start"
-            description: "start downloading immediately"
-            width: parent.width
+            elide: Text.ElideMiddle
+            text: qsTr("from: ") + torrent.downloadDir
         }
         TextField{
             id: locationInput

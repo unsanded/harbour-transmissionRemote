@@ -10,6 +10,9 @@ public:
     explicit RTorrentTorrent(RTorrent *parent );
 
     virtual void updateFields(QVariantMap &freshData);
+    virtual void moveData(QString /*destination*/){
+        //not supported for now
+    };
 signals:
 
 public slots:

@@ -77,7 +77,7 @@ Page {
             }//MenuItem
             MenuItem {
                 text: qsTr("refresh")
-                onClicked:client.update();
+                onClicked:client.updateTorrents();
             }//MenuItem
         }//pulldownmenu
     }//

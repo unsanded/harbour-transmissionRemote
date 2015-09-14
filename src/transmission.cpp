@@ -4,6 +4,7 @@
 #include "transmissionCommands/uploadtorrent.h"
 #include "rpcconnection.h"
 #include "torrent.h"
+#include "transmissiontorrent.h"
 
 #include <QtAlgorithms>
 
@@ -42,6 +43,8 @@ void Transmission::updateTorrents(const QVariantList& ids, const QList<Field>& f
 
     QStringList fieldnames;
 
+
+
     for(auto field: fields)
         fieldnames.append(getFieldName(field));
 
@@ -69,7 +72,7 @@ void Transmission::updateStats()
     connection->sendCommand(command);
 }
 
-void Transmission::uploadTorrent(QString filename, bool start, QString location)
+void Transmission::uploadTorrent(const QString &filename, bool start, QString location)
 {
     transmissionCommands::UploadTorrent* command = new transmissionCommands::UploadTorrent(filename, start, location, this);
 
@@ -79,28 +82,34 @@ void Transmission::uploadTorrent(QString filename, bool start, QString location)
            );
 
     connection->sendCommand(command);
-
 }
 
 void Transmission::onTorrentData(QVariantMap& data)
 {
     QString id=QString("%1").arg(data["id"].toInt(), 3, 10);
 
-    Torrent* t= torrentLookup[id];
+    Torrent* t= getTorrent(id);
     if(!t){
         qDebug() << "new torent " <<  id;
-        t=new Torrent(this);
+        t=new TransmissionTorrent(this);
         t->setid(id);
-        torrentLookup.insert(id, t);
-        torrentList.append(t);
+        addTorrent(t, id);
+
         if(data.contains("downloadDir"))
         {
             QString dir = data["downloadDir"].toString();
             //go to parent directory
-            if(dir[1]==':')
+            if(dir[1]==':')//windows
+            {
                 dir.truncate(dir.lastIndexOf('\\', -2));
+                //for some reason weird paths keeps shoing up...
+                // for instance "/path/./to//directory
+                dir=dir.replace("/./", "/");
+                dir=dir.replace("//", "/");
+            }
             else
                 dir.truncate(dir.lastIndexOf('/', -2));
+
             addSaveLocation(dir);
         }
         emit torrentsChanged(torrents());
@@ -112,8 +121,10 @@ void Transmission::onUpdateDone()
 {
 }
 
-QStringList Transmission::getAllTorrentFields() const
+QList<TorrentClient::Field> Transmission::getAllTorrentFields() const
 {
-    QStringList fields;
-    return fields;
+    QList<TorrentClient::Field> result;
+    for(int i = 0; i<=RATIOLIMIT; i++)
+        result.append( (Field)i );
+    return result;
 }

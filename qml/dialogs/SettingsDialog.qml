@@ -53,7 +53,7 @@ Dialog {
             cancelText: "cancel"
         }
         Button{
-            anchors.centerIn: parent
+            anchors.horizontalCenter: parent.horizontalCenter
             text:"add client"
             width: parent.width
             onClicked: {

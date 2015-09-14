@@ -19,23 +19,7 @@ void UpdateCommand::handleReply()
 
         int fieldCount = torrentFields.count();
         for(int i=0; i< fieldCount; i++){
-            if(fields[i] == "hash")
-                result["hash"] = result["id"] = torrentFields[i].toString();
-            else
-            if(fields[i] == "name")
-                result["name"] = torrentFields[i];
-            else
-            if(fields[i] == "state")
-                result["state"] = torrentFields[i];
-            else
-            if(fields[i] == "up_rate")
-                result["upSpeed"] = torrentFields[i];
-            else
-            if(fields[i] == "down_rate")
-                result["downSpeed"] = torrentFields[i];
-            else
-            if(fields[i] == "message")
-                result["status"] = torrentFields[i];
+            result[fields[i]] = torrentFields[i];
         }
         emit gotTorrentInfo(result);
     }

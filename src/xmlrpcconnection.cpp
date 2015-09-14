@@ -131,6 +131,7 @@ void XmlRpcCommand::gotReply()
         replyArguments.append(parseXmlVariant(paramValue.toElement().childNodes().at(0)));
     }
     handleReply();
+    emit done();
 }
 
 QDomElement buildDomElement(QVariant input,  QDomDocument& doc){
