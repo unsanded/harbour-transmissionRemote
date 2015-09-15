@@ -11,7 +11,7 @@ moveTorrent::moveTorrent(Torrent* torrent, QString destination, QObject *parent)
 {
     requestArguments["move"] = true;
     QJsonArray ids;
-    ids.append(torrent->id());
+    ids.append(torrent->id().toInt());
     requestArguments["ids"]=ids;
     requestArguments["location"] = destination;
 }

@@ -51,10 +51,11 @@ protected:
 
 public:
 
-    typedef  enum Field {
+    enum Field {
         ID,
         NAME,
         HASH,
+        PERCENTAGE,
         DOWNLOADDIR,
         FILES,
         FILECOUNT,
@@ -75,7 +76,8 @@ public:
 
         RATIOLIMIT,
 
-    } Field;
+    };
+    typedef int Field;
 
     Q_ENUMS(Field)
 
@@ -85,11 +87,13 @@ public:
     int downSpeed() const;
     const QStringList saveLocations() const;
 
-Q_INVOKABLE virtual QList<Field> getAllTorrentFields() const = 0;
+Q_INVOKABLE virtual QList<Field> getAllTorrentFields() const {
+        return QList<Field>();
+    }
 
 public:
 
-    explicit TorrentClient(QString name, QString url="", QString username="", QString password="", QObject *parent = 0)
+    explicit TorrentClient(QString name="", QString url="", QString username="", QString password="", QObject *parent = 0)
         :QObject(parent)
     {
 
@@ -146,7 +150,7 @@ QString name() const
      * @brief clientType indicates what type of torrentClient this is.
      * @return  a string. for example "transmission"
      */
-    virtual const char* clientType()=0;
+    virtual const char* clientType(){ return "ABSTRACT"; }
 
 
 QString password() const
@@ -188,14 +192,14 @@ public slots:
      * @brief connectToServer is called when server is changed.
      * @return true when the connection succeeds.
      */
-    virtual bool connectToServer()=0;
-    virtual void disconnectFromServer()=0;
+    virtual bool connectToServer(){return false;}
+    virtual void disconnectFromServer(){}
 
     /**
      * @brief onTorrentData process data about torrents
      * @param data the data to be processed
      */
-    virtual void onTorrentData(QVariantMap &data) = 0;
+    virtual void onTorrentData(QVariantMap& /*data*/) {}
 
 
     /**
@@ -210,8 +214,9 @@ virtual bool addSaveLocation(QString location);
  * @param torrents the id's of the torrents to update
  * @param fields the fields to upate
  */
-virtual void updateTorrents(const QVariantList& torrents = QVariantList(), const QList<Field> &fields = QList<Field>())=0;
-virtual void updateStats()=0;
+virtual void updateTorrents(const QVariantList &torrents = QVariantList(), const QList<int> &fields = QList<int>()){}
+
+virtual void updateStats(){}
 
     /**
  * @brief uploadTorrent should upload a local torrent file to the server for downloading
@@ -220,7 +225,7 @@ virtual void updateStats()=0;
  * @param saveLocation the location on the server to save the data
  * Note: saveLocation is not supported by rtorrent
  */
-virtual void uploadTorrent(const QString& torrentFile, bool autoStart=true, QString saveLocation = "") = 0;
+virtual void uploadTorrent(const QString& torrentFile, bool autoStart=true, QString saveLocation = "") {}
 
     void setUpSpeed(int arg);
 

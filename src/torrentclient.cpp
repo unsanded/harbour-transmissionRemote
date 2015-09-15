@@ -10,6 +10,21 @@ const QStringList TorrentClient::saveLocations() const
 }
 
 bool TorrentClient::addSaveLocation(QString location){
+
+    //preprocess location
+    if(location[1]==':')//windows
+    {
+        location.truncate(location.lastIndexOf('\\', -2));
+    }
+    else
+    {
+        location.truncate(location.lastIndexOf('/', -2));
+    }
+    location=location.replace("/./", "/");
+    location=location.replace("//", "/");
+
+
+
     auto iter = m_saveLocations.insert(location);
     if(iter == m_saveLocations.end()){
         return false;

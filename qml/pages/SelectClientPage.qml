@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import harbour.transmissionremote 1.0
+import harbour.transmissionremote 2.0
 import "../dialogs"
 import "../prettyFileSize.js" as Pretty
 Page {
@@ -11,7 +11,7 @@ Page {
     Timer{
         repeat: true;
         interval: 1000
-        running: autoUpdateSwitch.checked
+        running: autoUpdateSwitch.checked && page.visible
         onTriggered: {
             for (var c in settings.clients)
                 settings.clients[c].updateStats();

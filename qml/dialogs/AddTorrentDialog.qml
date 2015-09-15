@@ -1,12 +1,12 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import harbour.transmissionremote 1.0
+import harbour.transmissionremote 2.0
 
 Dialog {
     id: root
     property Settings settings
     property alias location: locationInput.text
-    property QtObject client
+    property TorrentClient client
     property string torrentFile
 
 
@@ -39,7 +39,8 @@ Dialog {
                         text: client.name
                         onClicked: {
                             root.client = this.client
-                            this.client.update()
+                            console.log("ENUMTEST " + TorrentClient.DOWNLOADDIR);
+                            this.client.updateTorrents([], [TorrentClient.DOWNLOADDIR])
                         }
                     }
                 }

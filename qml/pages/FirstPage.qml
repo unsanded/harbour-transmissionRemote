@@ -29,23 +29,23 @@
 */
  import QtQuick 2.0
 import Sailfish.Silica 1.0
-import harbour.transmissionremote 1.0
+import harbour.transmissionremote 2.0
 import "../dialogs"
 
 
 Page {
     id: page
 
-    property QtObject client
+    property TorrentClient client
     property Settings settings
 
 
     Timer{
         id:updateTimer
         interval: 1000
-        onTriggered: client.updateTorrents()
-        triggeredOnStart: true
-        running: page.visible
+        onTriggered: client.updateTorrents([], [TorrentClient.PERCENTAGE, TorrentClient.ETA])
+        triggeredOnStart:false
+        running: autoUpdateSwitch.checked && page.visible
         repeat:  true
     }
     SilicaListView{
@@ -65,6 +65,12 @@ Page {
 
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
         PullDownMenu {
+            TextSwitch{
+                id: autoUpdateSwitch
+                text: qsTr("auto update");
+                checked: true;
+            }
+
             MenuItem {
                 text: qsTr("settings")
                 onClicked:{

@@ -66,11 +66,30 @@ void Torrent::fullUpdate()
     fields.append( TorrentClient::FILES);
 
     ((TorrentClient*) parent())->updateTorrents(list, fields);
-
 }
 
 
 int Torrent::totalSize() const
 {
     return m_totalSize;
+}
+
+QQmlListProperty<TorrentFile> Torrent::files()
+{
+    return QQmlListProperty<TorrentFile>( (QObject*) this, fileList);
+}
+
+QString Torrent::downloadDir() const
+{
+    return m_downloadDir;
+}
+
+bool Torrent::isActive() const
+{
+    return m_isActive;
+}
+
+Torrent::State Torrent::state() const
+{
+    return m_state;
 }

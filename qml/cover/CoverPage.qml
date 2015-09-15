@@ -30,14 +30,15 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import harbour.transmissionremote 1.0
+import harbour.transmissionremote 2.0
 
 import "../prettyFileSize.js" as Pretty
 
 CoverBackground {
 
     id: cover
-    property QtObject client
+    property Settings settings
+    property int currentClient:0
 
 
 
@@ -45,7 +46,7 @@ CoverBackground {
         running: (cover.status===2)
         triggeredOnStart: true
         onTriggered: {
-            client.updateStats();
+            settings.clients[currentClient].updateStats();
         }
         repeat: true
         interval: 2000
@@ -57,22 +58,35 @@ CoverBackground {
         Label {
             id: label
             anchors.horizontalCenter: parent.horizontalCenter
-            text: qsTr("Transmission")
+            text: settings.clients[currentClient].name
         }
         Label {
             id: upspeed
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "up: " + Pretty.prettyFileSize(client.upSpeed) + "/s"
+            text: "up: " + Pretty.prettyFileSize(settings.clients[currentClient].upSpeed) + "/s"
         }
         Label {
             id: downspeed
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "down: " + Pretty.prettyFileSize(client.downSpeed) + "/s"
+            text: "down: " + Pretty.prettyFileSize(settings.clients[currentClient].downSpeed) + "/s"
         }
     }
 
-    //TODO make some fancy coveraction shit
+    CoverActionList {
+        id: coverAction
 
+        CoverAction {
+            iconSource: "image://theme/icon-cover-next"
+
+            onTriggered: {
+                console.log("currentClient " + currentClient + " of " + settings.clients.size)
+                currentClient++;
+                if(currentClient >= settings.clients.size)
+                    currentClient=0;
+
+            }
+        }
+    }
 }
 
 

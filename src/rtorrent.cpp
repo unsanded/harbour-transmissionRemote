@@ -83,6 +83,8 @@ QStringList RTorrent::getFieldName(TorrentClient::Field field)
     case NAME:
         result << "name";
         break;
+    case PERCENTAGE:
+        result << "size_bytes" << "completed_bytes";
     case STATE:
         result << "state" << "is_hash_checking";
         break;

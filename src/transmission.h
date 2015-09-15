@@ -23,11 +23,16 @@ public:
     static QStringList getFieldName(Field field){
         QStringList res;
         switch(field){
+        case HASH:
+            res << "hashString";
         case ID:
             res <<  "id";
             break;
         case NAME:
             res <<  "name";
+            break;
+        case PERCENTAGE:
+            res << "percentDone";
             break;
         case DOWNLOADDIR:
             res <<  "downloadDir";
@@ -94,7 +99,7 @@ public slots:
 
 
     // TorrentClient interface
-    virtual void updateTorrents(const QVariantList& torrents = QVariantList(), const QList<Field> &fields = QList<Field>());
+    virtual void updateTorrents(const QVariantList& torrents = QVariantList(), const QList<int>& fields = QList<int>());
 
     virtual const char* clientType(){
         return "transmission";

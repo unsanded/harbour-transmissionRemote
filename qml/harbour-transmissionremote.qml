@@ -30,7 +30,7 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import harbour.transmissionremote 1.0
+import harbour.transmissionremote 2.0
 
 import "pages"
 import "cover"
@@ -40,7 +40,6 @@ import "dialogs"
 ApplicationWindow
 {
 
-    property  QtObject firstClient
     Settings{
         id: st
     }
@@ -59,9 +58,7 @@ ApplicationWindow
         }
 
 
-        firstClient = st.clients[0];
 
-        firstClient.updateTorrents([], [TorrentClient.DOWNLOADDIR]);
         console.log("args",Qt.application.arguments)
 
         if(Qt.application.arguments.length>1){
@@ -75,9 +72,6 @@ ApplicationWindow
                         }
                    )
         }
-        else{
-            client.update();
-        }
     }
 
 
@@ -86,7 +80,7 @@ ApplicationWindow
         } }
 
     cover: CoverPage{
-        client: firstClient
+        settings: st
     }
 }
 

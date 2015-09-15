@@ -50,12 +50,12 @@ int main(int argc, char *argv[])
     // To display the view, call "show()" (will show fullscreen on device).
 
     qRegisterMetaType<QList<Torrent*> >("QObjectList");
-    qmlRegisterType<Torrent>     ("harbour.transmissionremote", 1, 0, "Torrent");
-    qmlRegisterType<TorrentFile> ("harbour.transmissionremote", 1, 0, "TorrentFile");
+    qmlRegisterType<TorrentClient> ("harbour.transmissionremote", 2, 0, "TorrentClient");
+    qmlRegisterType<Torrent>       ("harbour.transmissionremote", 2, 0, "Torrent");
+    qmlRegisterType<TorrentFile>   ("harbour.transmissionremote", 2, 0, "TorrentFile");
 
-    qmlRegisterType<Settings>("harbour.transmissionremote", 1, 0, "Settings");
+    qmlRegisterType<Settings>("harbour.transmissionremote", 2, 0, "Settings");
 
-    qmlRegisterUncreatableType<TorrentClient>("harbour.transmissionremote", 1, 0, "TorrentClient", "TorrentClient is abstract. You need to use a specific type of torrent client");
     return SailfishApp::main(argc, argv);
 }
 

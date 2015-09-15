@@ -11,12 +11,6 @@ TorrentGet::TorrentGet(QVariantList ids, const QStringList& f, QObject *parent) 
         fields.append(  QString("id"));
     if(!fields.contains(QString("name")))
         fields.append(  QString("name"));
-    if(!fields.contains(QString("percentDone")))
-        fields.append(  QString("percentDone"));
-    if(!fields.contains(QString("eta")))
-        fields.append(  QString("eta"));
-    if(!fields.contains(QString("downloadDir")))
-        fields .append( QString("downloadDir"));
     if(!torrentIds.empty())
     {
         requestArguments["ids"] = torrentIds;

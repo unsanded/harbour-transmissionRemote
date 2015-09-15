@@ -12,6 +12,8 @@
 class Torrent : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(State)
+
     Q_PROPERTY(QString id READ id WRITE setid NOTIFY idChanged)
     Q_PROPERTY(QString name READ name WRITE setname NOTIFY nameChanged)
     Q_PROPERTY(qreal percentage READ percentage WRITE setpercentage NOTIFY percentageChanged)
@@ -20,22 +22,26 @@ class Torrent : public QObject
     Q_PROPERTY(int downSpeed READ downSpeed WRITE setDownSpeed NOTIFY downSpeedChanged)
     Q_PROPERTY(int totalSize READ totalSize WRITE setTotalSize NOTIFY totalSizeChanged)
     Q_PROPERTY(QString downloadDir READ downloadDir WRITE setDownloadDir NOTIFY downloadDirChanged)
+    Q_PROPERTY(bool isActive READ isActive WRITE setIsActive NOTIFY isActiveChanged)
+    Q_PROPERTY(State state READ state WRITE setState NOTIFY stateChanged)
 
     Q_PROPERTY(QQmlListProperty<TorrentFile> files READ files NOTIFY filesChanged)
 
     QVariantMap extraData;
 
-    enum State{
+
+public:
+    typedef enum State{
         DOWNLOADING,
         SEEDING,
         IDLE,
         CHECKING,
         MOVING,
         STALLED
-    };
+    } State;
 
 
-
+private:
     QString m_name;
     qreal m_percentage;
     int m_fileCount;
@@ -52,8 +58,9 @@ private:
     int m_upSpeed;
     int m_downSpeed;
     int m_totalSize;
-
     QString m_downloadDir;
+    bool m_isActive;
+    State m_state;
 
 public:
     explicit Torrent( TorrentClient *parent=0);
@@ -67,6 +74,7 @@ protected:
 
 public:
 
+    //properties
 QString name() const;
 qreal percentage() const;
 int fileCount() const;
@@ -74,33 +82,10 @@ QString id() const;
 int upSpeed() const;
 int downSpeed() const;
 int totalSize() const;
-
-QQmlListProperty<TorrentFile> files()
-{
-    return QQmlListProperty<TorrentFile>( (QObject*) this, fileList);
-}
-
-
-QString downloadDir() const
-{
-    return m_downloadDir;
-}
-
-signals:
-
-void nameChanged(QString arg);
-void percentageChanged(qreal arg);
-void fileCountChanged(int arg);
-void idChanged(QString arg);
-void filesChanged(QQmlListProperty<TorrentFile> arg);
-
-void upSpeedChanged(int arg);
-
-void downSpeedChanged(int arg);
-
-void totalSizeChanged(int arg);
-
-void downloadDirChanged(QString arg);
+QQmlListProperty<TorrentFile> files();
+QString downloadDir() const;
+bool isActive() const;
+State state() const;
 
 public slots:
 
@@ -109,11 +94,45 @@ public slots:
  * @param freshData VariantMap which maps field names to torrentData.
  * The fieldnames depend on which client is used. So to add a new client one needs so subclass torrent as wel
  */
-virtual void updateFields(QVariantMap& /*freshData*/){};
+virtual void updateFields(QVariantMap& /*freshData*/){}
 
-virtual void moveData(QString /*destination*/){};
+/**
+ * @brief moveData this function should move the data on the server for this torrent to a given location
+ */
+virtual void moveData(QString /*destination*/){}
 
+/**
+ * @brief fullUpdate should update all field and files for this torrent
+ */
 void fullUpdate();
+
+signals:
+
+/**
+ * @brief finished should be emitted when the torrent is completed
+ */
+void finished();
+
+//property signals...
+void nameChanged(QString arg);
+void percentageChanged(qreal arg);
+void fileCountChanged(int arg);
+void idChanged(QString arg);
+void filesChanged(QQmlListProperty<TorrentFile> arg);
+void upSpeedChanged(int arg);
+void downSpeedChanged(int arg);
+void totalSizeChanged(int arg);
+void downloadDirChanged(QString arg);
+void isActiveChanged(bool arg);
+void stateChanged(State arg);
+
+
+
+
+
+
+
+public slots:
 
 
 // From now on it's just setters; boooring
@@ -171,6 +190,20 @@ void setDownloadDir(QString arg)
     if (m_downloadDir != arg) {
         m_downloadDir = arg;
         emit downloadDirChanged(arg);
+    }
+}
+void setIsActive(bool arg)
+{
+    if (m_isActive != arg) {
+        m_isActive = arg;
+        emit isActiveChanged(arg);
+    }
+}
+void setState(State arg)
+{
+    if (m_state != arg) {
+        m_state = arg;
+        emit stateChanged(arg);
     }
 }
 };

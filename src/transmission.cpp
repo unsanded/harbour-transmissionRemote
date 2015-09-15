@@ -38,7 +38,7 @@ void Transmission::disconnectFromServer()
 }
 
 
-void Transmission::updateTorrents(const QVariantList& ids, const QList<Field>& fields)
+void Transmission::updateTorrents(const QVariantList& ids, const QList<int> &fields)
 {
 
     QStringList fieldnames;
@@ -90,26 +90,15 @@ void Transmission::onTorrentData(QVariantMap& data)
 
     Torrent* t= getTorrent(id);
     if(!t){
-        qDebug() << "new torent " <<  id;
         t=new TransmissionTorrent(this);
         t->setid(id);
         addTorrent(t, id);
+        connect(t, SIGNAL(downloadDirChanged(QString)),
+                this, SLOT(addSaveLocation(QString)));
 
         if(data.contains("downloadDir"))
         {
             QString dir = data["downloadDir"].toString();
-            //go to parent directory
-            if(dir[1]==':')//windows
-            {
-                dir.truncate(dir.lastIndexOf('\\', -2));
-                //for some reason weird paths keeps shoing up...
-                // for instance "/path/./to//directory
-                dir=dir.replace("/./", "/");
-                dir=dir.replace("//", "/");
-            }
-            else
-                dir.truncate(dir.lastIndexOf('/', -2));
-
             addSaveLocation(dir);
         }
         emit torrentsChanged(torrents());
