@@ -38,6 +38,8 @@ Dialog {
     property Settings settings
 
 
+
+
     onAccepted: {
         console.log('accepted settings ')
         settings.saveClients();
@@ -45,8 +47,10 @@ Dialog {
 
     Column {
         id: settingsColumn
+
+        anchors.left:  parent.left + Theme.horizontalPageMargin
+        anchors.right: parent.right - Theme.horizontalPageMargin
         spacing: 10
-        width: parent.width
         height: 400
         DialogHeader{
             acceptText: "save"
@@ -76,25 +80,35 @@ Dialog {
         delegate: Component{
             BackgroundItem{
                 width: clientList.width
-                height: clientName.height
-                Label{
-                    id: clientName
-                    text: model.name
-                    font.pixelSize: Theme.fontSizeMedium
-                }
-                ContextMenu{
-                    MenuItem{
-                        text: "delete";
-                        onClicked: {
-                            deleteRemorse.visible=true
-                            deleteRemorse.execute("deleting connection", function() {settings.removeClient(model.name); } )
+                height: clientName.height + clientType.height
+                Column{
+                    Label{
+                        id: clientName
+                        text: model.name
+                        font.pixelSize: Theme.fontSizeLarge
+                        width: parent.width
+                    }
+                    Label{
+                        id: clientType
+                        text: model.type
+                        color: Theme.secondaryColor
+                        font.pixelSize: Theme.fontSizeSmall
+                        width: parent.width
+                    }
+
+                    ContextMenu{
+                        MenuItem{
+                            text: "delete";
+                            onClicked: {
+                                deleteRemorse.visible=true
+                                deleteRemorse.execute("deleting connection", function() {settings.removeClient(model.name); } )
+                            }
                         }
                     }
-                }
-                RemorseItem{
-                    id: deleteRemorse;
-                }
-
+                    RemorseItem{
+                        id: deleteRemorse;
+                    }
+               }
                 onClicked: {
 
                 pageStack.push

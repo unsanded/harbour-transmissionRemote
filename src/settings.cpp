@@ -72,11 +72,10 @@ void Settings::loadClients()
 
 void Settings::saveSettings()
 {
-    settings.beginGroup("general");
+    settings.beginGroup("gui");
     settings.setValue("autoUpdateInClientSelect", autoUpdateInClientSelect());
+    settings.endGroup();
     saveClients();
-
-
 }
 
 TorrentClient* Settings::getClient(QString name)
@@ -84,7 +83,6 @@ TorrentClient* Settings::getClient(QString name)
     if(m_clients.contains(name))
         return m_clients[name];
     return nullptr;
-
 }
 
 void Settings::removeClient(QString name)

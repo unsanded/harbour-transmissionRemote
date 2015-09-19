@@ -1,23 +1,10 @@
 #include "xmlrpcconnection.h"
 
-class DialectCommand : public XmlRpcCommand{
-public:
-    DialectCommand(QObject* parent):
-    XmlRpcCommand("xmlrpc_dialect"){
-        requestArguments.append("i8");
-    }
-    void handleReply(){
-        //deleteLater();
-    }
-};
 
 XmlRpcConnection::XmlRpcConnection(QString url, QObject *parent) :
    RpcConnection(url, parent)
 {
     contentType="application/xml";
-    //XmlRpcCommand* dialectCommand = new DialectCommand(this);
-
-    //sendCommand(dialectCommand);
 }
 
 

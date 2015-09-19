@@ -22,6 +22,8 @@ Page {
         id: clientList
         model: settings.clients
         anchors.fill: parent
+        leftMargin: Theme.horizontalPageMargin
+        topMargin: Theme.paddingLarge
         PullDownMenu {
             TextSwitch{
                 id:autoUpdateSwitch
@@ -53,7 +55,6 @@ Page {
         delegate: BackgroundItem{
             id: client
             width: parent.width
-            height: 200
 
             onClicked: {
                 pageStack.push(
@@ -69,15 +70,22 @@ Page {
                 Label{
                     text: modelData.name
                     width: parent.width
-                    font.pointSize: Theme.fontSizeLarge
+                    font.pointSize: Theme.fontSizeExtraLarge
+                }
+                Label{
+                    text: modelData.type
+                    width: parent.width
+                    color: Theme.secondaryColor
                 }
                 Label{
                     text: qsTr("up: ") + Pretty.prettyFileSize(modelData.upSpeed) + "/s";
                     width: parent.width
+                    color: Theme.secondaryColor
                 }
                 Label{
                     text: qsTr("down: ") + Pretty.prettyFileSize(modelData.downSpeed) + "/s";
                     width: parent.width
+                    color: Theme.secondaryColor
                 }
             }
         }

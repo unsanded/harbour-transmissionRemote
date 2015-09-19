@@ -51,7 +51,6 @@ OTHER_FILES += \
     harbour-transmissionremote.desktop \
     rpm/harbour-transmissionremote.spec \
     rpm/harbour-transmissionremote.yaml \
-    rpm/harbour-transmissionremote.changes.in \
     qml/harbour-transmissionremote.qml \
     qml/dialogs/AddTorrentDialog.qml \
     qml/dialogs/ClientSettingsDialog.qml \
@@ -59,7 +58,8 @@ OTHER_FILES += \
     doc/rtorrentCapture.txt \
     qml/pages/SelectClientPage.qml \
     doc/rtorrentAddDump.txt \
-    qml/dialogs/MoveTorrentDialog.qml
+    qml/dialogs/MoveTorrentDialog.qml \
+    rpm/harbour-transmissionremote.changes
 
 # to disable building translations every time, comment out the
 # following CONFIG line
